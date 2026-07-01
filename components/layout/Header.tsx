@@ -204,7 +204,7 @@ export default function Header() {
   return (
     <>
       {/* 2. MAIN NAVIGATION HEADER */}
-      <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-gray-100 shadow-sm transition-all duration-300">
+      <header className="fixed top-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-b border-gray-100 shadow-sm transition-all duration-300">
         <div className="max-w-[1440px] mx-auto px-6 md:px-12">
           <div className="flex items-center justify-between h-16 md:h-20 gap-4">
             
