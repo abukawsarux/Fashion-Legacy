@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { useLanguage } from "../../context/LanguageContext";
+import { useAuth } from "../../context/AuthContext";
 import { 
   Search, 
   ShoppingCart, 
@@ -17,7 +18,8 @@ import {
   ArrowRight,
   HelpCircle,
   Truck,
-  Heart
+  Heart,
+  User
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
@@ -120,6 +122,8 @@ export default function Header() {
     isCartOpen,
     setIsCartOpen
   } = useLanguage();
+
+  const { user, isAuthenticated } = useAuth();
   
   // Drawer States
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -242,10 +246,10 @@ export default function Header() {
                 onMouseEnter={() => setIsHomeHovered(true)}
                 onMouseLeave={() => setIsHomeHovered(false)}
               >
-                <div className="flex items-center gap-1 hover:text-[#740108] transition-colors">
+                <Link href="/" className="flex items-center gap-1 hover:text-[#740108] transition-colors">
                   <span>{t("home")}</span>
                   <ChevronDown size={14} className="text-gray-400 group-hover:text-[#740108] transition-transform group-hover:rotate-180 duration-200" />
-                </div>
+                </Link>
                 <span className="absolute bottom-0 left-0 w-full h-0.5 bg-[#740108] scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-200" />
                 
                 {/* Dropdown Menu Wrapper with Soft Animation */}
@@ -275,7 +279,10 @@ export default function Header() {
                 </AnimatePresence>
               </div>
 
-              <Link href="/orders" className="relative py-2 hover:text-[#740108] transition-colors group">
+              <Link 
+                href={isAuthenticated ? "/orders" : "/auth?redirect=/orders"} 
+                className="relative py-2 hover:text-[#740108] transition-colors group"
+              >
                 {t("orders")}
                 <span className="absolute bottom-0 left-0 w-full h-0.5 bg-[#740108] scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-200" />
               </Link>
@@ -349,6 +356,26 @@ export default function Header() {
                   {totalCartQuantity}
                 </span>
               </button>
+
+              {/* Profile/Auth Button */}
+              <Link
+                href={isAuthenticated ? "/profile" : "/auth"}
+                className="relative p-2 text-gray-800 hover:bg-gray-50 rounded-full transition-all duration-200 flex items-center justify-center"
+                aria-label="User Profile"
+              >
+                {isAuthenticated && user ? (
+                  <div className={`w-6 h-6 rounded-full flex items-center justify-center font-black text-[10px] uppercase border ${
+                    user.avatar === "avatar_men" ? "bg-blue-50 text-blue-600 border-blue-200" :
+                    user.avatar === "avatar_women" ? "bg-pink-50 text-pink-600 border-pink-200" :
+                    user.avatar === "avatar_kids" ? "bg-yellow-50 text-yellow-600 border-yellow-200" :
+                    "bg-purple-50 text-purple-600 border-purple-200"
+                  }`}>
+                    {user.name.charAt(0)}
+                  </div>
+                ) : (
+                  <User size={22} />
+                )}
+              </Link>
 
             </div>
           </div>
@@ -582,9 +609,14 @@ export default function Header() {
             >
               {/* Drawer Header */}
               <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
-                <div className="font-bold text-lg text-gray-900 flex items-center gap-1.5">
-                  <span className="bg-[#740108] text-white px-1.5 py-0.5 rounded font-extrabold text-sm">FL</span>
-                  <span>Menu</span>
+                <div className="font-bold text-lg text-gray-900 flex items-center">
+                  <Image
+                    src="/images/logo.png"
+                    alt="Fashion Legacy Emblem"
+                    width={180}
+                    height={50}
+                    className="object-contain h-7 w-auto"
+                  />
                 </div>
                 <button 
                   onClick={() => setIsMobileMenuOpen(false)}

@@ -3,6 +3,7 @@
 
 import React from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useLanguage } from "../../context/LanguageContext";
 import { 
   Phone, 
@@ -90,10 +91,15 @@ export default function Footer() {
           {/* COLUMN 1: BRAND PROFILE & CONTACT */}
           <div className="lg:col-span-4 space-y-5">
             <Link href="/" className="inline-block">
-              <span className="text-xl md:text-2xl font-black tracking-wider text-white uppercase flex items-center gap-1.5">
-                <span className="w-3.5 h-6 bg-[#740108] rounded-sm transform skew-x-12 inline-block" />
-                <span>Fashion <span className="text-[#740108]">Legacy</span></span>
-              </span>
+              <div className="relative h-auto w-36 md:w-64 overflow-hidden flex-shrink-0 flex items-center justify-center">
+                <Image
+                  src="/images/logo.png"
+                  alt="Fashion Legacy Emblem"
+                  width={1000}
+                  height={800}
+                  className="object-contain"
+                />
+              </div>
             </Link>
             <p className="text-xs md:text-sm leading-relaxed text-gray-400">
               {t.aboutBrand}

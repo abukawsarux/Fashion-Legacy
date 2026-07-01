@@ -3,6 +3,7 @@
 import { NextUIProvider } from "@nextui-org/react";
 import { useEffect } from "react";
 import { LanguageProvider } from "../context/LanguageContext";
+import { AuthProvider } from "../context/AuthContext";
 
 export function Providers({ children }: { children: React.ReactNode }) {
   useEffect(() => {
@@ -49,7 +50,9 @@ export function Providers({ children }: { children: React.ReactNode }) {
 
   return (
     <LanguageProvider>
-      <NextUIProvider>{children}</NextUIProvider>
+      <AuthProvider>
+        <NextUIProvider>{children}</NextUIProvider>
+      </AuthProvider>
     </LanguageProvider>
   );
 }

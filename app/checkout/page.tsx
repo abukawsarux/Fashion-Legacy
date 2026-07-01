@@ -10,8 +10,11 @@ import Link from "next/link";
 import { ArrowLeft, CheckCircle2, ShieldCheck, CreditCard, Truck, Phone, MapPin, User, ChevronRight, AlertCircle } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
+import { useAuth } from "../../context/AuthContext";
+
 export default function CheckoutPage() {
   const { language, currency, cartItems, clearCart } = useLanguage();
+  const { user, isAuthenticated, addSimulatedOrder } = useAuth();
 
   // Form states
   const [name, setName] = useState("");
@@ -24,6 +27,15 @@ export default function CheckoutPage() {
   const [selectedGateway, setSelectedGateway] = useState<"bkash" | "nagad" | "rocket">("bkash");
   const [senderNumber, setSenderNumber] = useState("");
   const [transactionId, setTransactionId] = useState("");
+
+  // Pre-fill fields from Auth profile if logged in
+  useEffect(() => {
+    if (isAuthenticated && user) {
+      setName(user.name);
+      setPhone(user.phone);
+      setAddress(user.address);
+    }
+  }, [isAuthenticated, user]);
 
   // Loading & order placement state
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -103,6 +115,18 @@ export default function CheckoutPage() {
       const orderId = `FL-${Math.floor(100000 + Math.random() * 900000)}-${language === "en" ? "EN" : "BD"}`;
       setGeneratedOrderId(orderId);
       setFinalTotal(finalAmountString);
+      
+      // Save order to profile order history if authenticated
+      if (isAuthenticated) {
+        addSimulatedOrder(
+          cartItems,
+          parseFloat(displayTotal),
+          paymentMethod === "cod"
+            ? (language === "en" ? "Cash on Delivery" : "ক্যাশ অন ডেলিভারি")
+            : `${language === "en" ? "Mobile Banking" : "মোবাইল ব্যাংকিং"} (${selectedGateway.toUpperCase()})`
+        );
+      }
+
       setIsSubmitting(false);
       setOrderSuccess(true);
       clearCart(); // Empty the cart upon success
