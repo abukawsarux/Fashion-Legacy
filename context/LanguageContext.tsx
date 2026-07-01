@@ -110,7 +110,7 @@ export const translations: Record<Language, Record<string, string>> = {
 
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
   const [language, setLanguageState] = useState<Language>("en");
-  const [currency, setCurrencyState] = useState<Currency>("USD");
+  const [currency, setCurrencyState] = useState<Currency>("BDT");
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [mounted, setMounted] = useState(false);

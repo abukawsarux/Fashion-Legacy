@@ -14,7 +14,7 @@ const josefinSans = Josefin_Sans({
   variable: "--font-josefin-sans",
 });
 
-const siteUrl = "https://jihad-hasan-editor.vercel.app/";
+const siteUrl = "https://fashion-legacy.vercel.app";
 const ogImageUrl = `${siteUrl}/opengraph-image.png`;
 
 /* ---------------- METADATA ---------------- */
@@ -24,8 +24,9 @@ export const metadata: Metadata = {
   title: "Fashion Legacy | Premium Fashion Destination",
   description: "Explore the legacy of premium fashion with our curated collection of outfits, footwear, and accessories.",
   icons: {
-    icon: "/icon.ico",
-    shortcut: "/icon.ico",
+    icon: "/favicon.ico",
+    shortcut: "/favicon.ico",
+    apple: "/favicon.ico",
   },
   openGraph: {
     title: "Fashion Legacy | Premium Fashion Destination",

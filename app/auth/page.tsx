@@ -1,7 +1,7 @@
 // app/auth/page.tsx
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Suspense } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { useLanguage } from "../../context/LanguageContext";
 import Container from "../../components/shared/Container";
@@ -11,6 +11,18 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 
 export default function AuthPage() {
+  return (
+    <Suspense fallback={
+      <div className="flex justify-center items-center min-h-[50vh]">
+        <div className="animate-spin rounded-full h-8 w-8 border-2 border-[#740108] border-t-transparent"></div>
+      </div>
+    }>
+      <AuthContent />
+    </Suspense>
+  );
+}
+
+function AuthContent() {
   const { user, isAuthenticated, login, signup } = useAuth();
   const { language } = useLanguage();
   const router = useRouter();

@@ -120,7 +120,7 @@ export default function CheckoutPage() {
       if (isAuthenticated) {
         addSimulatedOrder(
           cartItems,
-          parseFloat(displayTotal),
+          subtotalUSD + shippingCostUSD,
           paymentMethod === "cod"
             ? (language === "en" ? "Cash on Delivery" : "ক্যাশ অন ডেলিভারি")
             : `${language === "en" ? "Mobile Banking" : "মোবাইল ব্যাংকিং"} (${selectedGateway.toUpperCase()})`

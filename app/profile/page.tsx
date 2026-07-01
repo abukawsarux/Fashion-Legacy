@@ -9,10 +9,11 @@ import { useRouter } from "next/navigation";
 import { User, Phone, Mail, MapPin, Save, LogOut, ShoppingBag, CheckCircle, Clock, Truck, ShieldCheck, UserCheck } from "lucide-react";
 import { motion } from "framer-motion";
 import Image from "next/image";
+import { convertPrice, getCurrencySymbol } from "../../data/products";
 
 export default function ProfilePage() {
   const { user, isAuthenticated, logout, updateProfile, orders } = useAuth();
-  const { language } = useLanguage();
+  const { language, currency } = useLanguage();
   const router = useRouter();
 
   // Profile Form States
@@ -348,7 +349,7 @@ export default function ProfilePage() {
 
                   <div className="flex justify-between items-center pt-1.5 border-t border-gray-200/40 text-gray-900">
                     <span className="font-bold text-gray-400 uppercase text-[9px]">{t.orderTotal} ({ord.itemsCount} {language === "en" ? "items" : "টি"})</span>
-                    <span className="font-black text-[#740108] text-sm">${ord.total.toFixed(2)}</span>
+                    <span className="font-black text-[#740108] text-sm">{convertPrice(ord.total, currency)} {getCurrencySymbol(currency)}</span>
                   </div>
 
                 </div>

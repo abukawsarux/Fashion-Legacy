@@ -18,10 +18,11 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { convertPrice, getCurrencySymbol } from "../../data/products";
 
 export default function OrdersPage() {
   const { orders, isAuthenticated } = useAuth();
-  const { language } = useLanguage();
+  const { language, currency } = useLanguage();
   const router = useRouter();
 
   // Route protection
@@ -212,7 +213,7 @@ export default function OrdersPage() {
                     </div>
 
                     <div className="text-right font-black text-gray-900 font-mono">
-                      ${(item.priceUSD * item.quantity).toFixed(2)}
+                      {convertPrice(item.priceUSD * item.quantity, currency)} {getCurrencySymbol(currency)}
                     </div>
                   </div>
                 ))}
@@ -228,7 +229,7 @@ export default function OrdersPage() {
                 <div className="space-y-1">
                   <span className="block text-[9px] uppercase tracking-wider text-gray-400">{t.totalPaid}</span>
                   <span className="block text-sm font-black text-[#740108]">
-                    ${order.total.toFixed(2)}
+                    {convertPrice(order.total, currency)} {getCurrencySymbol(currency)}
                   </span>
                   <span className="block text-[10px] text-gray-400 font-bold">
                     ({order.itemsCount} {order.itemsCount === 1 ? t.item : t.items})
