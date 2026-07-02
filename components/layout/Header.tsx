@@ -292,7 +292,7 @@ export default function Header() {
             <div className="flex items-center gap-2 md:gap-4">
               
               {/* Language Selector Dropdown */}
-              <div className="relative" ref={langRef}>
+              <div className="hidden md:block relative" ref={langRef}>
                 <button 
                   onClick={() => setIsLangDropdownOpen(!isLangDropdownOpen)}
                   className="flex items-center gap-1.5 px-2.5 py-1.5 md:px-3 md:py-2 rounded-full border border-gray-200 hover:border-gray-300 hover:bg-gray-50 transition-all font-semibold text-xs text-gray-700"
@@ -352,7 +352,7 @@ export default function Header() {
                 aria-label="Shopping Cart"
               >
                 <ShoppingCart size={22} />
-                <span className="absolute top-0 right-0 w-5 h-5 bg-[#740108] text-white text-[10px] font-bold flex items-center justify-center rounded-full border-2 border-white shadow-sm">
+                <span className="absolute top-0.5 right-0.5 w-5 h-5 bg-[#740108] text-white text-[10px] font-bold flex items-center justify-center rounded-full border-2 border-white shadow-sm">
                   {totalCartQuantity}
                 </span>
               </button>
@@ -642,6 +642,13 @@ export default function Header() {
                     className="block py-2.5 px-3 rounded-lg text-sm font-semibold text-gray-800 hover:bg-red-50 hover:text-[#740108] transition-all"
                   >
                     {t("orders")}
+                  </Link>
+                  <Link 
+                    href="/profile" 
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="block py-2.5 px-3 rounded-lg text-sm font-semibold text-gray-800 hover:bg-red-50 hover:text-[#740108] transition-all"
+                  >
+                    {language === "en" ? "My Profile" : "আমার প্রোফাইল"}
                   </Link>
                 </div>
 
