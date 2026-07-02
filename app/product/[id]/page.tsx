@@ -332,10 +332,12 @@ export default function ProductDetailPage() {
       {/* RELATED PRODUCTS */}
       {relatedProducts.length > 0 && (
         <section className="space-y-6 mb-16">
-          <h2 className="text-lg md:text-xl font-black text-gray-900 uppercase tracking-tight flex items-center gap-2">
-            <span className="w-2.5 h-6 bg-[#740108] rounded" />
-            <span>{language === "en" ? "You May Also Like" : "অন্যান্য পছন্দসমূহ"}</span>
-          </h2>
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-gray-100 pb-4">
+            <h2 className="text-lg md:text-xl font-black text-gray-900 uppercase tracking-tight flex items-center gap-2">
+              <span className="w-2.5 h-6 bg-[#740108] rounded" />
+              <span>{language === "en" ? "You May Also Like" : "অন্যান্য পছন্দসমূহ"}</span>
+            </h2>
+          </div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
             {relatedProducts.map((prod) => (
               <ProductCard

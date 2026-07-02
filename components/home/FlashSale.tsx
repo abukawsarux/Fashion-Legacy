@@ -11,10 +11,11 @@ import { motion } from "framer-motion";
 
 interface FlashSaleProps {
   products: Product[];
+  activeCategory?: string;
   onOpenDetails?: (product: Product) => void;
 }
 
-export default function FlashSale({ products, onOpenDetails }: FlashSaleProps) {
+export default function FlashSale({ products, activeCategory = "all", onOpenDetails }: FlashSaleProps) {
   const { language, currency } = useLanguage();
   const [timeLeft, setTimeLeft] = useState({ hours: 4, minutes: 32, seconds: 15 });
 
@@ -48,19 +49,26 @@ export default function FlashSale({ products, onOpenDetails }: FlashSaleProps) {
     return numStr.replace(/\d/g, (d) => banglaDigits[parseInt(d)]);
   };
 
-  // Select hot sale products
-  const flashSaleItems = products.slice(4, 8); // Display mock products for flash sale
+  // Filter products by the selected category dynamically
+  const filteredProducts = activeCategory === "all"
+    ? products
+    : products.filter((prod) => prod.category === activeCategory);
+
+  // Take up to 4 items from the filtered list, falling back to mock defaults if empty
+  const flashSaleItems = filteredProducts.length > 0 
+    ? filteredProducts.slice(0, 4) 
+    : products.slice(4, 8);
 
   return (
-    <section className="bg-gradient-to-r from-red-50/50 via-amber-50/20 to-red-50/50 rounded-3xl p-6 md:p-8 border border-red-100/50 shadow-sm mb-12">
+    <section className="mb-12 space-y-6">
       {/* Header section with Timer */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-red-100/60 pb-6 mb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-gray-100 pb-4">
         <div className="flex items-center gap-3">
           <div className="bg-[#740108] text-white p-2 rounded-xl flex items-center justify-center animate-pulse">
             <Zap size={20} fill="currentColor" />
           </div>
           <div>
-            <h2 className="text-xl font-black text-gray-900 tracking-tight uppercase flex items-center gap-2">
+            <h2 className="text-lg md:text-xl font-black text-gray-900 tracking-tight uppercase flex items-center gap-2">
               <span>{language === "en" ? "Flash Sale" : "ফ্ল্যাশ সেল"}</span>
               <span className="text-xs font-bold bg-[#740108]/10 text-[#740108] px-2 py-0.5 rounded-full lowercase">
                 {language === "en" ? "hot deals" : "হট ডিল"}
@@ -90,8 +98,10 @@ export default function FlashSale({ products, onOpenDetails }: FlashSaleProps) {
         </div>
       </div>
 
-      {/* Flash Sale Items Grid */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+      {/* Items Container Card */}
+      <div className="bg-gradient-to-r from-red-50/50 via-amber-50/20 to-red-50/50 rounded-3xl p-6 md:p-8 border border-red-100/50 shadow-sm">
+        {/* Flash Sale Items Grid */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
         {flashSaleItems.map((item, index) => {
           const discountPrice = item.priceUSD * (1 - item.discountPercent / 100);
           const activeName = language === "en" ? item.nameEn : item.nameBn;
@@ -156,6 +166,7 @@ export default function FlashSale({ products, onOpenDetails }: FlashSaleProps) {
             </Link>
           );
         })}
+      </div>
       </div>
     </section>
   );

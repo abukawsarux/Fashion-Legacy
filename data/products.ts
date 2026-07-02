@@ -53,9 +53,7 @@ export const PRODUCTS: Product[] = [
     priceUSD: 69.99,
     discountPercent: 50,
     images: [
-      "/images/women_dress_var_1.png",
-      "/images/women_dress_var_2.png",
-      "/images/women_dress_var_3.png"
+      "/images/products/cardigan_1.png"
     ],
     sizes: ["S", "M", "L"],
     colors: [
@@ -77,9 +75,7 @@ export const PRODUCTS: Product[] = [
     priceUSD: 39.99,
     discountPercent: 45,
     images: [
-      "/images/men_jacket_var_1.png",
-      "/images/men_jacket_var_2.png",
-      "/images/men_jacket_var_3.png"
+      "/images/products/linen_shirt_1.png"
     ],
     sizes: ["S", "M", "L", "XL"],
     colors: [
@@ -101,9 +97,7 @@ export const PRODUCTS: Product[] = [
     priceUSD: 89.99,
     discountPercent: 30,
     images: [
-      "/images/shoes_sneakers_var_1.png",
-      "/images/shoes_sneakers_var_2.png",
-      "/images/shoes_sneakers_var_3.png"
+      "/images/products/leather_sneaker_1.png"
     ],
     sizes: ["40", "41", "42", "43"],
     colors: [
@@ -125,9 +119,7 @@ export const PRODUCTS: Product[] = [
     priceUSD: 119.99,
     discountPercent: 20,
     images: [
-      "/images/luxury_watch_var_1.png",
-      "/images/luxury_watch_var_2.png",
-      "/images/luxury_watch_var_3.png"
+      "/images/products/gold_watch_1.png"
     ],
     sizes: ["One Size"],
     colors: [
@@ -149,9 +141,7 @@ export const PRODUCTS: Product[] = [
     priceUSD: 45.00,
     discountPercent: 15,
     images: [
-      "/images/men_jacket_var_4.png",
-      "/images/men_jacket_var_5.png",
-      "/images/men_jacket_var_1.png"
+      "/images/products/chino_pants_1.png"
     ],
     sizes: ["30", "32", "34", "36"],
     colors: [
@@ -175,11 +165,7 @@ export const PRODUCTS: Product[] = [
     priceUSD: 49.99,
     discountPercent: 30,
     images: [
-      "/images/women_dress_var_1.png",
-      "/images/women_dress_var_2.png",
-      "/images/women_dress_var_3.png",
-      "/images/women_dress_var_4.png",
-      "/images/women_dress_var_5.png"
+      "/images/products/maxi_dress_1.png"
     ],
     sizes: ["S", "M", "L", "XL"],
     colors: [
@@ -201,11 +187,7 @@ export const PRODUCTS: Product[] = [
     priceUSD: 129.99,
     discountPercent: 20,
     images: [
-      "/images/women_dress_var_2.png",
-      "/images/women_dress_var_3.png",
-      "/images/women_dress_var_4.png",
-      "/images/women_dress_var_5.png",
-      "/images/women_dress_var_1.png"
+      "/images/products/evening_gown_1.png"
     ],
     sizes: ["XS", "S", "M", "L"],
     colors: [
@@ -227,11 +209,7 @@ export const PRODUCTS: Product[] = [
     priceUSD: 24.99,
     discountPercent: 10,
     images: [
-      "/images/women_dress_var_3.png",
-      "/images/women_dress_var_4.png",
-      "/images/women_dress_var_5.png",
-      "/images/women_dress_var_1.png",
-      "/images/women_dress_var_2.png"
+      "/images/products/tshirt_dress_1.png"
     ],
     sizes: ["S", "M", "L", "XL"],
     colors: [
@@ -253,11 +231,7 @@ export const PRODUCTS: Product[] = [
     priceUSD: 99.99,
     discountPercent: 25,
     images: [
-      "/images/women_dress_var_4.png",
-      "/images/women_dress_var_5.png",
-      "/images/women_dress_var_1.png",
-      "/images/women_dress_var_2.png",
-      "/images/women_dress_var_3.png"
+      "/images/products/trench_coat_1.png"
     ],
     sizes: ["M", "L", "XL"],
     colors: [
@@ -279,11 +253,7 @@ export const PRODUCTS: Product[] = [
     priceUSD: 34.99,
     discountPercent: 15,
     images: [
-      "/images/women_dress_var_5.png",
-      "/images/women_dress_var_1.png",
-      "/images/women_dress_var_2.png",
-      "/images/women_dress_var_3.png",
-      "/images/women_dress_var_4.png"
+      "/images/products/denim_skirt_1.png"
     ],
     sizes: ["26", "28", "30", "32"],
     colors: [
@@ -307,11 +277,7 @@ export const PRODUCTS: Product[] = [
     priceUSD: 59.99,
     discountPercent: 25,
     images: [
-      "/images/men_jacket_var_1.png",
-      "/images/men_jacket_var_2.png",
-      "/images/men_jacket_var_3.png",
-      "/images/men_jacket_var_4.png",
-      "/images/men_jacket_var_5.png"
+      "/images/products/denim_jacket_1.png"
     ],
     sizes: ["M", "L", "XL", "XXL"],
     colors: [
@@ -333,11 +299,7 @@ export const PRODUCTS: Product[] = [
     priceUSD: 34.99,
     discountPercent: 20,
     images: [
-      "/images/men_jacket_var_2.png",
-      "/images/men_jacket_var_3.png",
-      "/images/men_jacket_var_4.png",
-      "/images/men_jacket_var_5.png",
-      "/images/men_jacket_var_1.png"
+      "/images/products/sweatshirt_1.png"
     ],
     sizes: ["S", "M", "L", "XL"],
     colors: [
@@ -359,11 +321,7 @@ export const PRODUCTS: Product[] = [
     priceUSD: 44.99,
     discountPercent: 15,
     images: [
-      "/images/men_jacket_var_3.png",
-      "/images/men_jacket_var_4.png",
-      "/images/men_jacket_var_5.png",
-      "/images/men_jacket_var_1.png",
-      "/images/men_jacket_var_2.png"
+      "/images/products/oxford_shirt_1.png"
     ],
     sizes: ["S", "M", "L", "XL", "XXL"],
     colors: [
@@ -385,11 +343,7 @@ export const PRODUCTS: Product[] = [
     priceUSD: 109.99,
     discountPercent: 30,
     images: [
-      "/images/men_jacket_var_4.png",
-      "/images/men_jacket_var_5.png",
-      "/images/men_jacket_var_1.png",
-      "/images/men_jacket_var_2.png",
-      "/images/men_jacket_var_3.png"
+      "/images/products/slim_blazer_1.png"
     ],
     sizes: ["38", "40", "42", "44"],
     colors: [
@@ -411,11 +365,7 @@ export const PRODUCTS: Product[] = [
     priceUSD: 49.99,
     discountPercent: 20,
     images: [
-      "/images/men_jacket_var_5.png",
-      "/images/men_jacket_var_1.png",
-      "/images/men_jacket_var_2.png",
-      "/images/men_jacket_var_3.png",
-      "/images/men_jacket_var_4.png"
+      "/images/products/cargo_pants_1.png"
     ],
     sizes: ["30", "32", "34", "36"],
     colors: [
@@ -439,11 +389,7 @@ export const PRODUCTS: Product[] = [
     priceUSD: 79.99,
     discountPercent: 40,
     images: [
-      "/images/shoes_sneakers_var_1.png",
-      "/images/shoes_sneakers_var_2.png",
-      "/images/shoes_sneakers_var_3.png",
-      "/images/shoes_sneakers_var_4.png",
-      "/images/shoes_sneakers_var_5.png"
+      "/images/products/shoes_sneakers_1.png"
     ],
     sizes: ["39", "40", "41", "42", "43"],
     colors: [
@@ -465,11 +411,7 @@ export const PRODUCTS: Product[] = [
     priceUSD: 69.99,
     discountPercent: 30,
     images: [
-      "/images/shoes_sneakers_var_2.png",
-      "/images/shoes_sneakers_var_3.png",
-      "/images/shoes_sneakers_var_4.png",
-      "/images/shoes_sneakers_var_5.png",
-      "/images/shoes_sneakers_var_1.png"
+      "/images/products/shoes_hightops_1.png"
     ],
     sizes: ["40", "41", "42", "43", "44"],
     colors: [
@@ -491,11 +433,7 @@ export const PRODUCTS: Product[] = [
     priceUSD: 89.99,
     discountPercent: 20,
     images: [
-      "/images/shoes_sneakers_var_3.png",
-      "/images/shoes_sneakers_var_4.png",
-      "/images/shoes_sneakers_var_5.png",
-      "/images/shoes_sneakers_var_1.png",
-      "/images/shoes_sneakers_var_2.png"
+      "/images/shoes_sneakers_3.png"
     ],
     sizes: ["39", "40", "41", "42", "43"],
     colors: [
@@ -517,11 +455,7 @@ export const PRODUCTS: Product[] = [
     priceUSD: 119.99,
     discountPercent: 25,
     images: [
-      "/images/shoes_boots.png",
-      "/images/shoes_sneakers_var_1.png",
-      "/images/shoes_sneakers_var_2.png",
-      "/images/shoes_sneakers_var_3.png",
-      "/images/shoes_sneakers_var_5.png"
+      "/images/shoes_boots.png"
     ],
     sizes: ["40", "41", "42", "43", "44"],
     colors: [
@@ -543,11 +477,7 @@ export const PRODUCTS: Product[] = [
     priceUSD: 49.99,
     discountPercent: 15,
     images: [
-      "/images/shoes_sneakers_var_5.png",
-      "/images/shoes_sneakers_var_1.png",
-      "/images/shoes_sneakers_var_2.png",
-      "/images/shoes_sneakers_var_3.png",
-      "/images/shoes_sneakers_var_4.png"
+      "/images/shoes_sneakers_5.png"
     ],
     sizes: ["39", "40", "41", "42", "43"],
     colors: [
@@ -571,11 +501,7 @@ export const PRODUCTS: Product[] = [
     priceUSD: 149.99,
     discountPercent: 35,
     images: [
-      "/images/luxury_watch_var_1.png",
-      "/images/luxury_watch_var_2.png",
-      "/images/luxury_watch_var_3.png",
-      "/images/luxury_watch_var_4.png",
-      "/images/luxury_watch_var_5.png"
+      "/images/luxury_watch_1.png"
     ],
     sizes: ["One Size"],
     colors: [
@@ -597,11 +523,7 @@ export const PRODUCTS: Product[] = [
     priceUSD: 79.99,
     discountPercent: 20,
     images: [
-      "/images/luxury_watch_var_2.png",
-      "/images/luxury_watch_var_3.png",
-      "/images/luxury_watch_var_4.png",
-      "/images/luxury_watch_var_5.png",
-      "/images/luxury_watch_var_1.png"
+      "/images/luxury_watch_2.png"
     ],
     sizes: ["One Size"],
     colors: [
@@ -623,11 +545,7 @@ export const PRODUCTS: Product[] = [
     priceUSD: 99.99,
     discountPercent: 15,
     images: [
-      "/images/luxury_watch_var_3.png",
-      "/images/luxury_watch_var_4.png",
-      "/images/luxury_watch_var_5.png",
-      "/images/luxury_watch_var_1.png",
-      "/images/luxury_watch_var_2.png"
+      "/images/luxury_watch_3.png"
     ],
     sizes: ["One Size"],
     colors: [
@@ -649,11 +567,7 @@ export const PRODUCTS: Product[] = [
     priceUSD: 199.99,
     discountPercent: 30,
     images: [
-      "/images/luxury_watch_var_4.png",
-      "/images/luxury_watch_var_5.png",
-      "/images/luxury_watch_var_1.png",
-      "/images/luxury_watch_var_2.png",
-      "/images/luxury_watch_var_3.png"
+      "/images/luxury_watch_4.png"
     ],
     sizes: ["One Size"],
     colors: [
@@ -675,11 +589,7 @@ export const PRODUCTS: Product[] = [
     priceUSD: 89.99,
     discountPercent: 25,
     images: [
-      "/images/luxury_watch_var_5.png",
-      "/images/luxury_watch_var_1.png",
-      "/images/luxury_watch_var_2.png",
-      "/images/luxury_watch_var_3.png",
-      "/images/luxury_watch_var_4.png"
+      "/images/luxury_watch_5.png"
     ],
     sizes: ["One Size"],
     colors: [
@@ -703,11 +613,7 @@ export const PRODUCTS: Product[] = [
     priceUSD: 29.99,
     discountPercent: 30,
     images: [
-      "/images/kids_clothing_var_1.png",
-      "/images/kids_clothing_var_2.png",
-      "/images/kids_clothing_var_3.png",
-      "/images/kids_clothing_var_4.png",
-      "/images/kids_clothing_var_5.png"
+      "/images/kids_clothing_set_1.png"
     ],
     sizes: ["2-3Y", "3-4Y", "4-5Y"],
     colors: [
@@ -729,11 +635,7 @@ export const PRODUCTS: Product[] = [
     priceUSD: 39.99,
     discountPercent: 20,
     images: [
-      "/images/kids_clothing_var_2.png",
-      "/images/kids_clothing_var_3.png",
-      "/images/kids_clothing_var_4.png",
-      "/images/kids_clothing_var_5.png",
-      "/images/kids_clothing_var_1.png"
+      "/images/kids_clothing_set_2.png"
     ],
     sizes: ["6-12M", "12-18M", "18-24M"],
     colors: [
@@ -755,11 +657,7 @@ export const PRODUCTS: Product[] = [
     priceUSD: 19.99,
     discountPercent: 15,
     images: [
-      "/images/kids_clothing_var_3.png",
-      "/images/kids_clothing_var_4.png",
-      "/images/kids_clothing_var_5.png",
-      "/images/kids_clothing_var_1.png",
-      "/images/kids_clothing_var_2.png"
+      "/images/kids_clothing_set_3.png"
     ],
     sizes: ["3-4Y", "4-5Y", "5-6Y", "6-7Y"],
     colors: [
@@ -781,11 +679,7 @@ export const PRODUCTS: Product[] = [
     priceUSD: 44.99,
     discountPercent: 25,
     images: [
-      "/images/kids_clothing_var_4.png",
-      "/images/kids_clothing_var_5.png",
-      "/images/kids_clothing_var_1.png",
-      "/images/kids_clothing_var_2.png",
-      "/images/kids_clothing_var_3.png"
+      "/images/kids_clothing_set_4.png"
     ],
     sizes: ["2-3Y", "3-4Y", "4-5Y", "5-6Y"],
     colors: [
@@ -807,11 +701,7 @@ export const PRODUCTS: Product[] = [
     priceUSD: 34.99,
     discountPercent: 30,
     images: [
-      "/images/shoes_sneakers_var_5.png",
-      "/images/shoes_sneakers_var_1.png",
-      "/images/shoes_sneakers_var_2.png",
-      "/images/shoes_sneakers_var_3.png",
-      "/images/shoes_sneakers_var_4.png"
+      "/images/shoes_sneakers_2.png"
     ],
     sizes: ["24", "26", "28", "30"],
     colors: [

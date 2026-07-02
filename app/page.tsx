@@ -103,7 +103,7 @@ function HomeContent() {
         </section>
 
         {/* 3. FLASH SALE Countdown Section */}
-        <FlashSale products={PRODUCTS} />
+        <FlashSale products={PRODUCTS} activeCategory={activeCategory} />
 
         {/* 4. FILTERED PRODUCT SHOWCASE & SORTING */}
         <section className="space-y-6">
