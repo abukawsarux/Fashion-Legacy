@@ -1,6 +1,7 @@
 "use client";
 
 import React, { createContext, useContext, useState, useEffect } from "react";
+import { PRODUCTS as STATIC_PRODUCTS, Product } from "../data/products";
 
 export type Language = "en" | "bn";
 export type Currency = "USD" | "BDT" | "SAR";
@@ -30,6 +31,8 @@ interface LanguageContextProps {
   isCartOpen: boolean;
   setIsCartOpen: (open: boolean) => void;
   clearCart: () => void;
+  products: Product[];
+  isLoadingProducts: boolean;
 }
 
 const LanguageContext = createContext<LanguageContextProps | undefined>(undefined);
@@ -114,6 +117,25 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
+  
+  const [products, setProducts] = useState<Product[]>([]);
+  const [isLoadingProducts, setIsLoadingProducts] = useState(true);
+
+  // Fetch products from backend API
+  useEffect(() => {
+    const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+    fetch(`${apiBaseUrl}/api/products`)
+      .then((res) => res.json())
+      .then((data) => {
+        setProducts(data);
+        setIsLoadingProducts(false);
+      })
+      .catch((err) => {
+        console.error("Failed to load products from API", err);
+        setProducts(STATIC_PRODUCTS);
+        setIsLoadingProducts(false);
+      });
+  }, []);
 
   useEffect(() => {
     // Sync with localStorage on client mount to avoid hydration mismatch
@@ -215,6 +237,8 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
         isCartOpen,
         setIsCartOpen,
         clearCart,
+        products,
+        isLoadingProducts,
       }}
     >
       {children}

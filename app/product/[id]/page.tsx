@@ -4,7 +4,7 @@
 import React, { useState, useEffect } from "react";
 import { notFound, useParams } from "next/navigation";
 import Container from "../../../components/shared/Container";
-import { PRODUCTS, convertPrice, getCurrencySymbol } from "../../../data/products";
+import { convertPrice, getCurrencySymbol } from "../../../data/products";
 import { useLanguage } from "../../../context/LanguageContext";
 import ProductCard from "../../../components/home/ProductCard";
 import Image from "next/image";
@@ -12,18 +12,26 @@ import { Star, Plus, Minus, ShoppingCart, Truck, ShieldCheck, RefreshCw, HelpCir
 import { motion } from "framer-motion";
 
 export default function ProductDetailPage() {
+  const { language, currency, addToCart, products, isLoadingProducts } = useLanguage();
   const params = useParams();
   const id = params.id as string;
   
+  if (isLoadingProducts) {
+    return (
+      <div className="flex justify-center items-center min-h-[50vh]">
+        <div className="animate-spin rounded-full h-8 w-8 border-2 border-[#740108] border-t-transparent"></div>
+      </div>
+    );
+  }
+
   // Find product
-  const product = PRODUCTS.find((p) => p.id === id);
+  const product = products.find((p) => p.id === id);
   
   // Fallback if not found
   if (!product) {
     notFound();
   }
 
-  const { language, currency, addToCart } = useLanguage();
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [selectedSize, setSelectedSize] = useState("");
   const [selectedColorIndex, setSelectedColorIndex] = useState(0);
@@ -73,7 +81,7 @@ export default function ProductDetailPage() {
   };
 
   // Get related products
-  const relatedProducts = PRODUCTS.filter(
+  const relatedProducts = products.filter(
     (p) => p.category === product.category && p.id !== product.id
   ).slice(0, 4);
 

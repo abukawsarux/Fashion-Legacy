@@ -4,7 +4,7 @@
 import React, { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Container from "../components/shared/Container";
-import { PRODUCTS, Product } from "../data/products";
+import { Product } from "../data/products";
 import { useLanguage } from "../context/LanguageContext";
 import ProductCard from "../components/home/ProductCard";
 import FlashSale from "../components/home/FlashSale";
@@ -25,9 +25,17 @@ export default function Home() {
 }
 
 function HomeContent() {
-  const { language, t } = useLanguage();
+  const { language, t, products, isLoadingProducts } = useLanguage();
   const searchParams = useSearchParams();
   const categoryParam = searchParams.get("category");
+
+  if (isLoadingProducts) {
+    return (
+      <div className="flex justify-center items-center min-h-[50vh]">
+        <div className="animate-spin rounded-full h-8 w-8 border-2 border-[#740108] border-t-transparent"></div>
+      </div>
+    );
+  }
   
   // Navigation states
   const [activeCategory, setActiveCategory] = useState<string>("all");
@@ -54,7 +62,7 @@ function HomeContent() {
   ];
 
   // Filter & Sort Products
-  const filteredProducts = PRODUCTS.filter((prod) => {
+  const filteredProducts = products.filter((prod) => {
     if (activeCategory === "all") return true;
     return prod.category === activeCategory;
   });
@@ -112,7 +120,7 @@ function HomeContent() {
         </section>
 
         {/* 3. FLASH SALE Countdown Section */}
-        <FlashSale products={PRODUCTS} activeCategory={activeCategory} />
+        <FlashSale products={products} activeCategory={activeCategory} />
 
         {/* 4. FILTERED PRODUCT SHOWCASE & SORTING */}
         <section className="space-y-6">

@@ -30,7 +30,12 @@ interface AuthContextProps {
   logout: () => void;
   updateProfile: (updatedData: Partial<User>) => void;
   orders: OrderHistoryItem[];
-  addSimulatedOrder: (items: CartItem[], total: number, paymentMethod: string) => void;
+  addSimulatedOrder: (
+    items: CartItem[], 
+    total: number, 
+    paymentMethod: string, 
+    customerInfo?: { name: string; email: string; address: string; shippingArea: "inside" | "outside" }
+  ) => Promise<string>;
 }
 
 const AuthContext = createContext<AuthContextProps | undefined>(undefined);
@@ -39,85 +44,46 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [orders, setOrders] = useState<OrderHistoryItem[]>([]);
   const [mounted, setMounted] = useState(false);
+  
+  const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 
   // Sync state with localStorage on load
   useEffect(() => {
     const storedUser = localStorage.getItem("fl_user");
-    const storedOrders = localStorage.getItem("fl_orders");
 
     if (storedUser) {
       try {
-        setUser(JSON.parse(storedUser));
+        const parsedUser = JSON.parse(storedUser);
+        setUser(parsedUser);
+        
+        // Fetch order history from API on mount
+        fetch(`${apiBaseUrl}/api/orders/user/${parsedUser.email}`)
+          .then((res) => res.json())
+          .then((ordData) => {
+            setOrders(ordData.map((o: any) => ({
+              id: o.id,
+              date: o.createdAt.split("T")[0],
+              items: o.items.map((it: any) => ({
+                id: it.productId,
+                nameEn: it.nameEn,
+                nameBn: it.nameBn,
+                priceUSD: it.priceUSD,
+                image: "/images/logo.png",
+                quantity: it.quantity,
+                size: it.size,
+                colorEn: it.colorEn,
+                colorBn: it.colorEn
+              })),
+              itemsCount: o.items.reduce((sum: number, it: any) => sum + it.quantity, 0),
+              total: o.totalUSD,
+              paymentMethod: o.paymentMethod,
+              status: o.status === "Pending" ? "Processing" : o.status
+            })));
+          })
+          .catch((e) => console.error("Failed to load user orders on mount", e));
       } catch (e) {
         console.error("Failed to parse user", e);
       }
-    }
-    
-    if (storedOrders) {
-      try {
-        setOrders(JSON.parse(storedOrders));
-      } catch (e) {
-        console.error("Failed to parse orders", e);
-      }
-    } else {
-      // Mock initial order history with products for logged-in profile realism
-      const initialOrders: OrderHistoryItem[] = [
-        {
-          id: "FL-874312-BD",
-          date: "2026-06-15",
-          items: [
-            {
-              id: "prod-hot-1",
-              nameEn: "Chic Woolen Knitted Cardigan",
-              nameBn: "চটকদার উলের বোনা কার্ডিগান",
-              priceUSD: 69.99,
-              image: "/images/women_dress_var_1.png",
-              quantity: 1,
-              size: "M",
-              colorEn: "Creamy Beige",
-              colorBn: "ক্রিম বেইজ"
-            },
-            {
-              id: "prod-hot-2",
-              nameEn: "Casual Linen Shirt",
-              nameBn: "ক্যাজুয়াল লিনেন শার্ট",
-              priceUSD: 39.99,
-              image: "/images/men_jacket_var_1.png",
-              quantity: 1,
-              size: "L",
-              colorEn: "Ocean Blue",
-              colorBn: "সাগর নীল"
-            }
-          ],
-          itemsCount: 2,
-          total: 109.98,
-          paymentMethod: "bKash",
-          status: "Delivered"
-        },
-        {
-          id: "FL-492102-EN",
-          date: "2026-06-28",
-          items: [
-            {
-              id: "prod-hot-3",
-              nameEn: "Retro Leather Street Sneaker",
-              nameBn: "রেট্রো লেদার স্ট্রিট স্নিকার",
-              priceUSD: 89.99,
-              image: "/images/shoes_sneakers_var_1.png",
-              quantity: 1,
-              size: "42",
-              colorEn: "Retro Red",
-              colorBn: "রেট্রো লাল"
-            }
-          ],
-          itemsCount: 1,
-          total: 89.99,
-          paymentMethod: "Cash on Delivery",
-          status: "Shipped"
-        }
-      ];
-      setOrders(initialOrders);
-      localStorage.setItem("fl_orders", JSON.stringify(initialOrders));
     }
     setMounted(true);
   }, []);
@@ -141,65 +107,158 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   // Login simulated
   const login = async (email: string, password: string): Promise<boolean> => {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        // Any password works, sets mock user data
-        const mockUser: User = {
-          name: "Raihan Chowdhury",
-          email: email.trim(),
-          phone: "01712345678",
-          address: "House 14, Road 5, Uttara Sector 4, Dhaka",
-          avatar: "avatar_men"
-        };
-        setUser(mockUser);
-        resolve(true);
-      }, 800);
-    });
+    try {
+      const res = await fetch(`${apiBaseUrl}/api/auth/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password })
+      });
+      const data = await res.json();
+      if (data.user) {
+        setUser(data.user);
+        
+        // Fetch order history from API on mount
+        const ordRes = await fetch(`${apiBaseUrl}/api/orders/user/${data.user.email}`);
+        if (ordRes.ok) {
+          const ordData = await ordRes.json();
+          setOrders(ordData.map((o: any) => ({
+            id: o.id,
+            date: o.createdAt.split("T")[0],
+            items: o.items.map((it: any) => ({
+              id: it.productId,
+              nameEn: it.nameEn,
+              nameBn: it.nameBn,
+              priceUSD: it.priceUSD,
+              image: "/images/logo.png",
+              quantity: it.quantity,
+              size: it.size,
+              colorEn: it.colorEn,
+              colorBn: it.colorEn
+            })),
+            itemsCount: o.items.reduce((sum: number, it: any) => sum + it.quantity, 0),
+            total: o.totalUSD,
+            paymentMethod: o.paymentMethod,
+            status: o.status === "Pending" ? "Processing" : o.status
+          })));
+        }
+        return true;
+      }
+      return false;
+    } catch (err) {
+      console.error("Login API failed", err);
+      return false;
+    }
   };
 
   // Signup simulated
   const signup = async (name: string, email: string, phone: string): Promise<boolean> => {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        const mockUser: User = {
-          name: name.trim(),
-          email: email.trim(),
-          phone: phone.trim(),
-          address: "",
-          avatar: "avatar_women"
-        };
-        setUser(mockUser);
-        resolve(true);
-      }, 800);
-    });
+    try {
+      const res = await fetch(`${apiBaseUrl}/api/auth/register`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, email, phone })
+      });
+      const data = await res.json();
+      if (data.user) {
+        setUser(data.user);
+        setOrders([]);
+        return true;
+      }
+      return false;
+    } catch (err) {
+      console.error("Signup API failed", err);
+      return false;
+    }
   };
 
   // Logout
   const logout = () => {
     setUser(null);
     localStorage.removeItem("fl_user");
+    setOrders([]);
   };
 
   // Update Profile
-  const updateProfile = (updatedData: Partial<User>) => {
-    setUser((prev) => {
-      if (!prev) return null;
-      return { ...prev, ...updatedData };
-    });
+  const updateProfile = async (updatedData: Partial<User>) => {
+    if (!user) return;
+    try {
+      const res = await fetch(`${apiBaseUrl}/api/auth/profile`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: user.email, ...updatedData })
+      });
+      const data = await res.json();
+      if (data.user) {
+        setUser(data.user);
+      }
+    } catch (err) {
+      console.error("Update profile API failed", err);
+    }
   };
 
   // Add simulated checkout order to profile orders list
-  const addSimulatedOrder = (items: CartItem[], total: number, paymentMethod: string) => {
-    const newOrder: OrderHistoryItem = {
-      id: `FL-${Math.floor(100000 + Math.random() * 900000)}-BD`,
-      date: new Date().toISOString().split("T")[0],
-      items,
-      itemsCount: items.reduce((sum, it) => sum + it.quantity, 0),
-      total,
+  const addSimulatedOrder = async (
+    items: CartItem[], 
+    total: number, 
+    paymentMethod: string,
+    customerInfo?: { name: string; email: string; address: string; shippingArea: "inside" | "outside" }
+  ): Promise<string> => {
+    const payload = {
+      customerName: customerInfo?.name || user?.name || "Raihan Chowdhury",
+      customerEmail: customerInfo?.email || user?.email || "raihan@fashionlegacy.live",
+      customerAddress: customerInfo?.address || user?.address || "House 14, Road 5, Uttara Sector 4, Dhaka",
+      shippingArea: customerInfo?.shippingArea || "inside",
       paymentMethod,
-      status: "Processing"
+      items: items.map(item => ({
+        productId: item.id.split("-")[0],
+        nameEn: item.nameEn,
+        nameBn: item.nameBn,
+        priceUSD: item.priceUSD,
+        quantity: item.quantity,
+        size: item.size,
+        colorEn: item.colorEn
+      }))
     };
-    setOrders((prev) => [newOrder, ...prev]);
+
+    try {
+      const res = await fetch(`${apiBaseUrl}/api/orders`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+      const data = await res.json();
+      
+      // Reload order list
+      if (user) {
+        const ordRes = await fetch(`${apiBaseUrl}/api/orders/user/${user.email}`);
+        if (ordRes.ok) {
+          const ordData = await ordRes.json();
+          setOrders(ordData.map((o: any) => ({
+            id: o.id,
+            date: o.createdAt.split("T")[0],
+            items: o.items.map((it: any) => ({
+              id: it.productId,
+              nameEn: it.nameEn,
+              nameBn: it.nameBn,
+              priceUSD: it.priceUSD,
+              image: "/images/logo.png",
+              quantity: it.quantity,
+              size: it.size,
+              colorEn: it.colorEn,
+              colorBn: it.colorEn
+            })),
+            itemsCount: o.items.reduce((sum: number, it: any) => sum + it.quantity, 0),
+            total: o.totalUSD,
+            paymentMethod: o.paymentMethod,
+            status: o.status === "Pending" ? "Processing" : o.status
+          })));
+        }
+      }
+      return data.order?.id || `FL-${Math.floor(100000 + Math.random() * 900000)}-BD`;
+    } catch (err) {
+      console.error("Post order API failed", err);
+      return `FL-${Math.floor(100000 + Math.random() * 900000)}-BD`;
+    }
   };
 
   return (

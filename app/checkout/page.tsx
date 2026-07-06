@@ -101,7 +101,7 @@ export default function CheckoutPage() {
   };
 
   // Place Order Action
-  const handlePlaceOrder = (e: React.FormEvent) => {
+  const handlePlaceOrder = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validateForm()) return;
 
@@ -110,27 +110,27 @@ export default function CheckoutPage() {
     // Capture final total before clearing cart
     const finalAmountString = `${displayTotal} ${currencySymbol}`;
 
-    // Simulate order processing delay
-    setTimeout(() => {
-      const orderId = `FL-${Math.floor(100000 + Math.random() * 900000)}-${language === "en" ? "EN" : "BD"}`;
+    const pMethod = paymentMethod === "cod"
+      ? (language === "en" ? "Cash on Delivery" : "ক্যাশ অন ডেলিভারি")
+      : `${language === "en" ? "Mobile Banking" : "মোবাইল ব্যাংকিং"} (${selectedGateway.toUpperCase()})`;
+
+    try {
+      const orderId = await addSimulatedOrder(
+        cartItems,
+        subtotalUSD + shippingCostUSD,
+        pMethod,
+        { name, email: user?.email || (phone + "@customer.com"), address, shippingArea }
+      );
+
       setGeneratedOrderId(orderId);
       setFinalTotal(finalAmountString);
-      
-      // Save order to profile order history if authenticated
-      if (isAuthenticated) {
-        addSimulatedOrder(
-          cartItems,
-          subtotalUSD + shippingCostUSD,
-          paymentMethod === "cod"
-            ? (language === "en" ? "Cash on Delivery" : "ক্যাশ অন ডেলিভারি")
-            : `${language === "en" ? "Mobile Banking" : "মোবাইল ব্যাংকিং"} (${selectedGateway.toUpperCase()})`
-        );
-      }
-
       setIsSubmitting(false);
       setOrderSuccess(true);
       clearCart(); // Empty the cart upon success
-    }, 1500);
+    } catch (err) {
+      console.error("Checkout order submit failed", err);
+      setIsSubmitting(false);
+    }
   };
 
   if (cartItems.length === 0 && !orderSuccess) {
