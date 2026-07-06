@@ -60,7 +60,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         fetch(`${apiBaseUrl}/api/orders/user/${parsedUser.email}`)
           .then((res) => res.json())
           .then((ordData) => {
-            setOrders((ordData || []).map((o: any) => ({
+            const ordersArray = Array.isArray(ordData) ? ordData : [];
+            setOrders(ordersArray.map((o: any) => ({
               id: o.id,
               date: o.createdAt ? o.createdAt.split("T")[0] : (o.date || new Date().toISOString().split("T")[0]),
               items: (o.items || []).map((it: any) => ({
@@ -121,7 +122,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         const ordRes = await fetch(`${apiBaseUrl}/api/orders/user/${data.user.email}`);
         if (ordRes.ok) {
           const ordData = await ordRes.json();
-          setOrders((ordData || []).map((o: any) => ({
+          const ordersArray = Array.isArray(ordData) ? ordData : [];
+          setOrders(ordersArray.map((o: any) => ({
             id: o.id,
             date: o.createdAt ? o.createdAt.split("T")[0] : (o.date || new Date().toISOString().split("T")[0]),
             items: (o.items || []).map((it: any) => ({
@@ -233,7 +235,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         const ordRes = await fetch(`${apiBaseUrl}/api/orders/user/${user.email}`);
         if (ordRes.ok) {
           const ordData = await ordRes.json();
-          setOrders((ordData || []).map((o: any) => ({
+          const ordersArray = Array.isArray(ordData) ? ordData : [];
+          setOrders(ordersArray.map((o: any) => ({
             id: o.id,
             date: o.createdAt ? o.createdAt.split("T")[0] : (o.date || new Date().toISOString().split("T")[0]),
             items: (o.items || []).map((it: any) => ({
