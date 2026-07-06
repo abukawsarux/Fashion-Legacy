@@ -10,6 +10,7 @@ import ProductCard from "../components/home/ProductCard";
 import FlashSale from "../components/home/FlashSale";
 import { AnimatePresence } from "framer-motion";
 import { ShoppingBag, ArrowUpDown } from "lucide-react";
+import Image from "next/image";
 
 export default function Home() {
   return (
@@ -43,13 +44,13 @@ function HomeContent() {
 
   // Fordeal circular category quick selectors
   const categories = [
-    { key: "all", labelEn: "All Items", labelBn: "সব পণ্য", emoji: "🛍️" },
-    { key: "cat_hot", labelEn: "Hot Sale", labelBn: "হট সেল", emoji: "🔥" },
-    { key: "cat_women", labelEn: "Women", labelBn: "মহিলাদের", emoji: "👗" },
-    { key: "cat_men", labelEn: "Men", labelBn: "পুরুষদের", emoji: "👕" },
-    { key: "cat_shoes", labelEn: "Shoes", labelBn: "জুতো", emoji: "👟" },
-    { key: "cat_watches", labelEn: "Watches", labelBn: "ঘড়ি", emoji: "⌚" },
-    { key: "cat_kids", labelEn: "Kids", labelBn: "বাচ্চাদের", emoji: "👶" }
+    { key: "all", labelEn: "All Items", labelBn: "সব পণ্য", image: "/images/categories/all.png" },
+    { key: "cat_hot", labelEn: "Hot Sale", labelBn: "হট সেল", image: "/images/categories/hot.png" },
+    { key: "cat_women", labelEn: "Women", labelBn: "মহিলাদের", image: "/images/categories/women.png" },
+    { key: "cat_men", labelEn: "Men", labelBn: "পুরুষদের", image: "/images/categories/men.png" },
+    { key: "cat_shoes", labelEn: "Shoes", labelBn: "জুতো", image: "/images/categories/shoes.png" },
+    { key: "cat_watches", labelEn: "Watches", labelBn: "ঘড়ি", image: "/images/categories/watches.png" },
+    { key: "cat_kids", labelEn: "Kids", labelBn: "বাচ্চাদের", image: "/images/categories/kids.png" }
   ];
 
   // Filter & Sort Products
@@ -77,22 +78,30 @@ function HomeContent() {
     <>
       <Container className="pt-2 md:pt-4">
         {/* 2. CIRCULAR CATEGORY QUICK SELECTORS */}
-        <section className="mb-12">
-          <div className="flex items-center justify-center gap-4 md:gap-8 overflow-x-auto pb-4 md:pb-0 scrollbar-none">
+        <section className="mt-8 md:mt-12 mb-12">
+          <div className="flex items-center justify-center gap-4 md:gap-8 overflow-x-auto py-4 scrollbar-none">
             {categories.map((cat) => (
               <button
                 key={cat.key}
                 onClick={() => setActiveCategory(cat.key)}
                 className="flex flex-col items-center gap-2 group flex-shrink-0 cursor-pointer"
               >
-                <div className={`w-14 h-14 md:w-16 md:h-16 rounded-full flex items-center justify-center text-2xl transition-all shadow ${
+                <div className={`w-14 h-14 md:w-16 md:h-16 rounded-full flex items-center justify-center overflow-hidden transition-all shadow-sm ${
                   activeCategory === cat.key
-                    ? "bg-[#740108] border-2 border-red-200 scale-110"
-                    : "bg-white border border-gray-100 hover:border-gray-200 group-hover:scale-105"
+                    ? "border-2 border-[#740108] scale-110 shadow-md ring-4 ring-red-50/80 bg-white"
+                    : "bg-white border border-gray-100 hover:border-gray-300 hover:shadow-md group-hover:scale-105"
                 }`}>
-                  <span className={`${activeCategory === cat.key ? "scale-95" : ""}`}>{cat.emoji}</span>
+                  <Image
+                    src={cat.image}
+                    alt={cat.labelEn}
+                    width={80}
+                    height={80}
+                    className={`w-full h-full object-cover transition-transform duration-300 ${
+                      activeCategory === cat.key ? "scale-100" : "scale-95 group-hover:scale-100"
+                    }`}
+                  />
                 </div>
-                <span className={`text-[10px] md:text-xs font-bold transition-colors ${
+                <span className={`text-[10px] md:text-xs font-bold transition-colors tracking-tight ${
                   activeCategory === cat.key ? "text-[#740108] font-black" : "text-gray-600 group-hover:text-gray-900"
                 }`}>
                   {language === "en" ? cat.labelEn : cat.labelBn}
