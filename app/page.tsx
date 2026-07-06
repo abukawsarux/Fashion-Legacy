@@ -29,14 +29,6 @@ function HomeContent() {
   const searchParams = useSearchParams();
   const categoryParam = searchParams.get("category");
 
-  if (isLoadingProducts) {
-    return (
-      <div className="flex justify-center items-center min-h-[50vh]">
-        <div className="animate-spin rounded-full h-8 w-8 border-2 border-[#740108] border-t-transparent"></div>
-      </div>
-    );
-  }
-  
   // Navigation states
   const [activeCategory, setActiveCategory] = useState<string>("all");
   const [sortBy, setSortBy] = useState<string>("popular");
@@ -49,6 +41,14 @@ function HomeContent() {
       setActiveCategory("all");
     }
   }, [categoryParam]);
+
+  if (isLoadingProducts) {
+    return (
+      <div className="flex justify-center items-center min-h-[50vh]">
+        <div className="animate-spin rounded-full h-8 w-8 border-2 border-[#740108] border-t-transparent"></div>
+      </div>
+    );
+  }
 
   // Fordeal circular category quick selectors
   const categories = [

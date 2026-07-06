@@ -16,6 +16,26 @@ export default function ProductDetailPage() {
   const params = useParams();
   const id = params.id as string;
   
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
+  const [selectedSize, setSelectedSize] = useState("");
+  const [selectedColorIndex, setSelectedColorIndex] = useState(0);
+  const [quantity, setQuantity] = useState(1);
+  const [activeTab, setActiveTab] = useState<"desc" | "features">("desc");
+
+  // Find product
+  const product = products.find((p) => p.id === id);
+
+  // Reset states on product change
+  useEffect(() => {
+    if (product) {
+      setActiveImageIndex(0);
+      setSelectedSize(product.sizes[0] || "");
+      setSelectedColorIndex(0);
+      setQuantity(1);
+      setActiveTab("desc");
+    }
+  }, [product]);
+
   if (isLoadingProducts) {
     return (
       <div className="flex justify-center items-center min-h-[50vh]">
@@ -24,28 +44,10 @@ export default function ProductDetailPage() {
     );
   }
 
-  // Find product
-  const product = products.find((p) => p.id === id);
-  
   // Fallback if not found
   if (!product) {
     notFound();
   }
-
-  const [activeImageIndex, setActiveImageIndex] = useState(0);
-  const [selectedSize, setSelectedSize] = useState("");
-  const [selectedColorIndex, setSelectedColorIndex] = useState(0);
-  const [quantity, setQuantity] = useState(1);
-  const [activeTab, setActiveTab] = useState<"desc" | "features">("desc");
-
-  // Reset states on product change
-  useEffect(() => {
-    setActiveImageIndex(0);
-    setSelectedSize(product.sizes[0] || "");
-    setSelectedColorIndex(0);
-    setQuantity(1);
-    setActiveTab("desc");
-  }, [product]);
 
   const originalPrice = product.priceUSD;
   const discountedPrice = originalPrice * (1 - product.discountPercent / 100);
