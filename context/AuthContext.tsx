@@ -60,24 +60,24 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         fetch(`${apiBaseUrl}/api/orders/user/${parsedUser.email}`)
           .then((res) => res.json())
           .then((ordData) => {
-            setOrders(ordData.map((o: any) => ({
+            setOrders((ordData || []).map((o: any) => ({
               id: o.id,
-              date: o.createdAt.split("T")[0],
-              items: o.items.map((it: any) => ({
+              date: o.createdAt ? o.createdAt.split("T")[0] : (o.date || new Date().toISOString().split("T")[0]),
+              items: (o.items || []).map((it: any) => ({
                 id: it.productId,
                 nameEn: it.nameEn,
-                nameBn: it.nameBn,
+                nameBn: it.nameBn || it.nameEn,
                 priceUSD: it.priceUSD,
                 image: "/images/logo.png",
                 quantity: it.quantity,
-                size: it.size,
-                colorEn: it.colorEn,
-                colorBn: it.colorEn
+                size: it.size || "M",
+                colorEn: it.colorEn || "Default",
+                colorBn: it.colorEn || "ডিফল্ট"
               })),
-              itemsCount: o.items.reduce((sum: number, it: any) => sum + it.quantity, 0),
-              total: o.totalUSD,
-              paymentMethod: o.paymentMethod,
-              status: o.status === "Pending" ? "Processing" : o.status
+              itemsCount: (o.items || []).reduce((sum: number, it: any) => sum + it.quantity, 0),
+              total: o.totalUSD || o.total || 0,
+              paymentMethod: o.paymentMethod || "Cash on Delivery",
+              status: o.status === "Pending" ? "Processing" : (o.status || "Processing")
             })));
           })
           .catch((e) => console.error("Failed to load user orders on mount", e));
@@ -121,24 +121,24 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         const ordRes = await fetch(`${apiBaseUrl}/api/orders/user/${data.user.email}`);
         if (ordRes.ok) {
           const ordData = await ordRes.json();
-          setOrders(ordData.map((o: any) => ({
+          setOrders((ordData || []).map((o: any) => ({
             id: o.id,
-            date: o.createdAt.split("T")[0],
-            items: o.items.map((it: any) => ({
+            date: o.createdAt ? o.createdAt.split("T")[0] : (o.date || new Date().toISOString().split("T")[0]),
+            items: (o.items || []).map((it: any) => ({
               id: it.productId,
               nameEn: it.nameEn,
-              nameBn: it.nameBn,
+              nameBn: it.nameBn || it.nameEn,
               priceUSD: it.priceUSD,
               image: "/images/logo.png",
               quantity: it.quantity,
-              size: it.size,
-              colorEn: it.colorEn,
-              colorBn: it.colorEn
+              size: it.size || "M",
+              colorEn: it.colorEn || "Default",
+              colorBn: it.colorEn || "ডিফল্ট"
             })),
-            itemsCount: o.items.reduce((sum: number, it: any) => sum + it.quantity, 0),
-            total: o.totalUSD,
-            paymentMethod: o.paymentMethod,
-            status: o.status === "Pending" ? "Processing" : o.status
+            itemsCount: (o.items || []).reduce((sum: number, it: any) => sum + it.quantity, 0),
+            total: o.totalUSD || o.total || 0,
+            paymentMethod: o.paymentMethod || "Cash on Delivery",
+            status: o.status === "Pending" ? "Processing" : (o.status || "Processing")
           })));
         }
         return true;
@@ -233,24 +233,24 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         const ordRes = await fetch(`${apiBaseUrl}/api/orders/user/${user.email}`);
         if (ordRes.ok) {
           const ordData = await ordRes.json();
-          setOrders(ordData.map((o: any) => ({
+          setOrders((ordData || []).map((o: any) => ({
             id: o.id,
-            date: o.createdAt.split("T")[0],
-            items: o.items.map((it: any) => ({
+            date: o.createdAt ? o.createdAt.split("T")[0] : (o.date || new Date().toISOString().split("T")[0]),
+            items: (o.items || []).map((it: any) => ({
               id: it.productId,
               nameEn: it.nameEn,
-              nameBn: it.nameBn,
+              nameBn: it.nameBn || it.nameEn,
               priceUSD: it.priceUSD,
               image: "/images/logo.png",
               quantity: it.quantity,
-              size: it.size,
-              colorEn: it.colorEn,
-              colorBn: it.colorEn
+              size: it.size || "M",
+              colorEn: it.colorEn || "Default",
+              colorBn: it.colorEn || "ডিফল্ট"
             })),
-            itemsCount: o.items.reduce((sum: number, it: any) => sum + it.quantity, 0),
-            total: o.totalUSD,
-            paymentMethod: o.paymentMethod,
-            status: o.status === "Pending" ? "Processing" : o.status
+            itemsCount: (o.items || []).reduce((sum: number, it: any) => sum + it.quantity, 0),
+            total: o.totalUSD || o.total || 0,
+            paymentMethod: o.paymentMethod || "Cash on Delivery",
+            status: o.status === "Pending" ? "Processing" : (o.status || "Processing")
           })));
         }
       }
