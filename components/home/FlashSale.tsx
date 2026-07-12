@@ -17,24 +17,48 @@ interface FlashSaleProps {
 
 export default function FlashSale({ products, activeCategory = "all", onOpenDetails }: FlashSaleProps) {
   const { language, currency } = useLanguage();
-  const [timeLeft, setTimeLeft] = useState({ hours: 4, minutes: 32, seconds: 15 });
+  const [timeLeft, setTimeLeft] = useState({ hours: 0, minutes: 0, seconds: 0 });
 
   // Countdown timer logic
   useEffect(() => {
-    const timer = setInterval(() => {
-      setTimeLeft((prev) => {
-        if (prev.seconds > 0) {
-          return { ...prev, seconds: prev.seconds - 1 };
-        } else if (prev.minutes > 0) {
-          return { ...prev, minutes: prev.minutes - 1, seconds: 59 };
-        } else if (prev.hours > 0) {
-          return { hours: prev.hours - 1, minutes: 59, seconds: 59 };
-        } else {
-          return { hours: 4, minutes: 0, seconds: 0 }; // reset
-        }
-      });
-    }, 1000);
+    let targetTime = Date.now() + 4 * 3600 * 1000 + 32 * 60 * 1000; // fallback default: 4h 32m
 
+    const rawUrl = 
+      process.env.NEXT_PUBLIC_API_URL || 
+      (typeof window !== "undefined" && window.location.hostname.includes("fashionlegacy.live") 
+        ? "https://fashion-legacy-backend.vercel.app" 
+        : "http://localhost:5000");
+    const apiBaseUrl = rawUrl.endsWith("/") ? rawUrl.slice(0, -1) : rawUrl;
+
+    // Load flash sale target from API
+    fetch(`${apiBaseUrl}/api/flash-sale`)
+      .then(res => res.json())
+      .then(data => {
+        if (data.flashSaleEnd) {
+          const parsed = Date.parse(data.flashSaleEnd);
+          if (!isNaN(parsed) && parsed > Date.now()) {
+            targetTime = parsed;
+          }
+        }
+      })
+      .catch(err => {
+        console.error("Failed to load flash sale from API", err);
+      });
+
+    const updateTimer = () => {
+      const diff = targetTime - Date.now();
+      if (diff <= 0) {
+        setTimeLeft({ hours: 0, minutes: 0, seconds: 0 });
+        return;
+      }
+      const seconds = Math.floor((diff / 1000) % 60);
+      const minutes = Math.floor((diff / 1000 / 60) % 60);
+      const hours = Math.floor(diff / 1000 / 60 / 60);
+      setTimeLeft({ hours, minutes, seconds });
+    };
+
+    updateTimer();
+    const timer = setInterval(updateTimer, 1000);
     return () => clearInterval(timer);
   }, []);
 
