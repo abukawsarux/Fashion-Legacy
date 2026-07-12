@@ -134,7 +134,11 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
 
   // Fetch products and categories from backend API
   useEffect(() => {
-    const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+    const apiBaseUrl = 
+      process.env.NEXT_PUBLIC_API_URL || 
+      (typeof window !== "undefined" && window.location.hostname.includes("fashionlegacy.live") 
+        ? "https://backend-sabbir-nasir.vercel.app" 
+        : "http://localhost:5000");
     fetch(`${apiBaseUrl}/api/products`)
       .then((res) => res.json())
       .then((data) => {

@@ -50,7 +50,11 @@ function HomeContent() {
     );
   }
 
-  const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+  const apiBaseUrl = 
+    process.env.NEXT_PUBLIC_API_URL || 
+    (typeof window !== "undefined" && window.location.hostname.includes("fashionlegacy.live") 
+      ? "https://backend-sabbir-nasir.vercel.app" 
+      : "http://localhost:5000");
 
   // Fordeal circular category quick selectors mapped dynamically
   const categories = [

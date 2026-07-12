@@ -45,7 +45,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [orders, setOrders] = useState<OrderHistoryItem[]>([]);
   const [mounted, setMounted] = useState(false);
   
-  const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+  const apiBaseUrl = 
+    process.env.NEXT_PUBLIC_API_URL || 
+    (typeof window !== "undefined" && window.location.hostname.includes("fashionlegacy.live") 
+      ? "https://backend-sabbir-nasir.vercel.app" 
+      : "http://localhost:5000");
 
   // Sync state with localStorage on load
   useEffect(() => {
