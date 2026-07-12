@@ -132,7 +132,7 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
   const [categories, setCategories] = useState<Category[]>([]);
   const [isLoadingCategories, setIsLoadingCategories] = useState(true);
 
-  // Fetch products and categories from backend API
+  // Fetch products and categories from backend API with polling
   useEffect(() => {
     const rawApiUrl = 
       process.env.NEXT_PUBLIC_API_URL || 
@@ -140,36 +140,43 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
         ? "https://fashion-legacy-backend.vercel.app" 
         : "http://localhost:5000");
     const apiBaseUrl = rawApiUrl.endsWith("/") ? rawApiUrl.slice(0, -1) : rawApiUrl;
-    fetch(`${apiBaseUrl}/api/products`)
-      .then((res) => res.json())
-      .then((data) => {
-        setProducts(data);
-        setIsLoadingProducts(false);
-      })
-      .catch((err) => {
-        console.error("Failed to load products from API", err);
-        setProducts(STATIC_PRODUCTS);
-        setIsLoadingProducts(false);
-      });
 
-    fetch(`${apiBaseUrl}/api/categories`)
-      .then((res) => res.json())
-      .then((data) => {
-        setCategories(data);
-        setIsLoadingCategories(false);
-      })
-      .catch((err) => {
-        console.error("Failed to load categories from API", err);
-        setCategories([
-          { id: "cat_hot", nameEn: "Hot Sale", nameBn: "হট সেল", image: "/images/categories/hot.png" },
-          { id: "cat_women", nameEn: "Women's Fashion", nameBn: "মহিলাদের ফ্যাশন", image: "/images/categories/women.png" },
-          { id: "cat_men", nameEn: "Men's Fashion", nameBn: "পুরুষদের ফ্যাশন", image: "/images/categories/men.png" },
-          { id: "cat_shoes", nameEn: "Shoes", nameBn: "জুতো", image: "/images/categories/shoes.png" },
-          { id: "cat_watches", nameEn: "Watches & Acc.", nameBn: "ঘড়ি ও অ্যাক্সেসরিজ", image: "/images/categories/watches.png" },
-          { id: "cat_kids", nameEn: "Kids & Toys", nameBn: "বাচ্চাদের খেলনা ও পোশাক", image: "/images/categories/kids.png" }
-        ]);
-        setIsLoadingCategories(false);
-      });
+    const loadData = () => {
+      fetch(`${apiBaseUrl}/api/products`, { cache: "no-store" })
+        .then((res) => res.json())
+        .then((data) => {
+          setProducts(data);
+          setIsLoadingProducts(false);
+        })
+        .catch((err) => {
+          console.error("Failed to load products from API", err);
+          setProducts(STATIC_PRODUCTS);
+          setIsLoadingProducts(false);
+        });
+
+      fetch(`${apiBaseUrl}/api/categories`, { cache: "no-store" })
+        .then((res) => res.json())
+        .then((data) => {
+          setCategories(data);
+          setIsLoadingCategories(false);
+        })
+        .catch((err) => {
+          console.error("Failed to load categories from API", err);
+          setCategories([
+            { id: "cat_hot", nameEn: "Hot Sale", nameBn: "হট সেল", image: "/images/categories/hot.png" },
+            { id: "cat_women", nameEn: "Women's Fashion", nameBn: "মহিলাদের ফ্যাশন", image: "/images/categories/women.png" },
+            { id: "cat_men", nameEn: "Men's Fashion", nameBn: "পুরুষদের ফ্যাশন", image: "/images/categories/men.png" },
+            { id: "cat_shoes", nameEn: "Shoes", nameBn: "জুতো", image: "/images/categories/shoes.png" },
+            { id: "cat_watches", nameEn: "Watches & Acc.", nameBn: "ঘড়ি ও অ্যাক্সেসরিজ", image: "/images/categories/watches.png" },
+            { id: "cat_kids", nameEn: "Kids & Toys", nameBn: "বাচ্চাদের খেলনা ও পোশাক", image: "/images/categories/kids.png" }
+          ]);
+          setIsLoadingCategories(false);
+        });
+    };
+
+    loadData();
+    const interval = setInterval(loadData, 10000); // Poll every 10 seconds for real-time updates
+    return () => clearInterval(interval);
   }, []);
 
   useEffect(() => {
