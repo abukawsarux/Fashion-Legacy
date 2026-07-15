@@ -75,15 +75,23 @@ export default function FlashSale({ products, activeCategory = "all", onOpenDeta
     return numStr.replace(/\d/g, (d) => banglaDigits[parseInt(d)]);
   };
 
-  // Filter products by the selected category dynamically
-  const filteredProducts = activeCategory === "all"
-    ? products
-    : products.filter((prod) => Array.isArray(prod.category) ? prod.category.includes(activeCategory) : prod.category === activeCategory);
+  // Filter products that belong to the Flash Sale category (cat_flash)
+  const flashSaleProducts = products.filter(prod => 
+    Array.isArray(prod.category) ? prod.category.includes("cat_flash") : prod.category === "cat_flash"
+  );
 
-  // Take up to 4 items from the filtered list, falling back to mock defaults if empty
+  // If a category tab is active, filter the flash sale products by that category
+  const filteredProducts = activeCategory === "all"
+    ? flashSaleProducts
+    : flashSaleProducts.filter(prod => Array.isArray(prod.category) ? prod.category.includes(activeCategory) : prod.category === activeCategory);
+
+  // Fallback if no products are in flash sale
   const flashSaleItems = filteredProducts.length > 0 
     ? filteredProducts.slice(0, 4) 
-    : products.slice(4, 8);
+    : (activeCategory === "all" 
+        ? products.slice(0, 4) 
+        : products.filter(prod => Array.isArray(prod.category) ? prod.category.includes(activeCategory) : prod.category === activeCategory).slice(0, 4)
+      );
 
   return (
     <section className="mb-12 space-y-6">
