@@ -4,7 +4,7 @@
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Star, ShoppingCart, Eye } from "lucide-react";
+import { Plus } from "lucide-react";
 import { Product, convertPrice, getCurrencySymbol, getProductImageUrl } from "../../data/products";
 import { useLanguage } from "../../context/LanguageContext";
 import { motion } from "framer-motion";
@@ -22,15 +22,11 @@ export default function ProductCard({ product, onOpenDetails }: ProductCardProps
 
   const activeName = language === "en" ? product.nameEn : product.nameBn;
   const currencySymbol = getCurrencySymbol(currency);
-  const mainCategory = Array.isArray(product.category) ? product.category[0] : (product.category || "cat_hot");
-  
   const displayActivePrice = convertPrice(discountedPrice, currency);
-  const displayOriginalPrice = convertPrice(originalPrice, currency);
 
-  // Quick Add handler (adds default first size/color)
   const handleQuickAdd = (e: React.MouseEvent) => {
     e.stopPropagation();
-    e.preventDefault(); // Stop Link navigation
+    e.preventDefault();
     addToCart({
       id: `${product.id}-${product.sizes[0] || "one"}-${product.colors[0]?.nameEn || "default"}`,
       nameEn: product.nameEn,
@@ -46,13 +42,13 @@ export default function ProductCard({ product, onOpenDetails }: ProductCardProps
   return (
     <Link href={`/product/${product.id}`} className="block h-full">
       <motion.div 
-        initial={{ opacity: 0, y: 15 }}
+        initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3 }}
-        className="group relative bg-white border border-gray-100 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 cursor-pointer flex flex-col h-full"
+        className="group relative bg-transparent rounded-2xl overflow-hidden transition-all duration-300 cursor-pointer flex flex-col h-full"
       >
-        {/* Product Image Section */}
-        <div className="relative aspect-[4/5] bg-gray-50 overflow-hidden flex-shrink-0">
+        {/* Product Image Section with circular '+' button at bottom right */}
+        <div className="relative aspect-square bg-gray-100 rounded-2xl overflow-hidden mb-2.5 flex-shrink-0 border border-gray-100">
           <Image
             src={getProductImageUrl(product.images[0])}
             alt={activeName}
@@ -61,74 +57,26 @@ export default function ProductCard({ product, onOpenDetails }: ProductCardProps
             className="object-cover group-hover:scale-105 transition-transform duration-500"
           />
 
-          {/* Discount Badge */}
-          {product.discountPercent > 0 && (
-            <span className="absolute top-3 left-3 bg-[#D4A017] text-white text-[10px] md:text-xs font-bold px-2 py-0.5 rounded-md shadow-sm">
-              -{product.discountPercent}%
-            </span>
-          )}
-
-          {/* Hover Action Overlay */}
-          <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-3">
-            <div 
-              className="p-3 bg-white text-[#D4A017] hover:bg-[#D4A017] hover:text-white rounded-full transition-colors shadow-md"
-              aria-label="View Details"
-            >
-              <Eye size={18} />
-            </div>
-            <button 
-              onClick={handleQuickAdd}
-              className="p-3 bg-[#D4A017] text-white hover:bg-[#5c0006] rounded-full transition-colors shadow-md"
-              aria-label="Add to Cart"
-            >
-              <ShoppingCart size={18} />
-            </button>
-          </div>
+          {/* Circular Quick Add '+' Button at bottom-right corner (Exact Fordeal screenshot) */}
+          <button 
+            onClick={handleQuickAdd}
+            className="absolute bottom-3 right-3 w-8 h-8 bg-white/95 hover:bg-white text-gray-800 rounded-full flex items-center justify-center shadow-md border border-gray-200/80 transition-transform active:scale-95 cursor-pointer z-10"
+            aria-label="Add to cart"
+          >
+            <Plus size={18} className="stroke-[2.5]" />
+          </button>
         </div>
 
-        {/* Product Information Section */}
-        <div className="p-4 flex flex-col flex-1 justify-between gap-2.5">
-          <div className="space-y-1">
-            {/* Category Tag */}
-            <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wide">
-              {language === "en" 
-                ? mainCategory.replace("cat_", "").toUpperCase()
-                : mainCategory === "cat_women" ? "মহিলাদের ফ্যাশন" : mainCategory === "cat_men" ? "পুরুষদের ফ্যাশন" : "হট সেল"}
-            </span>
+        {/* Product Details (Title & Price matching Fordeal screenshot) */}
+        <div className="space-y-1.5 flex flex-col justify-between flex-1">
+          <h3 className="text-xs md:text-sm font-semibold text-gray-900 group-hover:text-black transition-colors line-clamp-2 leading-snug">
+            {activeName}
+          </h3>
 
-            {/* Product Title */}
-            <h3 className="text-sm font-semibold text-gray-900 group-hover:text-[#D4A017] transition-colors line-clamp-2 leading-tight">
-              {activeName}
-            </h3>
-          </div>
-
-          <div>
-            {/* Rating */}
-            <div className="flex items-center gap-1 mb-2">
-              <div className="flex text-amber-400">
-                {[...Array(5)].map((_, i) => (
-                  <Star 
-                    key={i} 
-                    size={12} 
-                    fill={i < Math.floor(product.rating) ? "currentColor" : "none"} 
-                    className={i < Math.floor(product.rating) ? "text-amber-400" : "text-gray-200"}
-                  />
-                ))}
-              </div>
-              <span className="text-[11px] text-gray-400 font-bold">({product.reviewsCount})</span>
-            </div>
-
-            {/* Pricing */}
-            <div className="flex items-baseline gap-2">
-              <span className="text-base font-extrabold text-[#D4A017]">
-                {currencySymbol}{displayActivePrice}
-              </span>
-              {product.discountPercent > 0 && (
-                <span className="text-xs text-gray-400 line-through">
-                  {currencySymbol}{displayOriginalPrice}
-                </span>
-              )}
-            </div>
+          <div className="text-sm md:text-base font-extrabold text-gray-900">
+            {currency === "BDT" || currencySymbol === "৳" 
+              ? `${displayActivePrice} BDT` 
+              : `${currencySymbol}${displayActivePrice}`}
           </div>
         </div>
       </motion.div>

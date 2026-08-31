@@ -18,6 +18,14 @@ export interface CartItem {
   colorBn: string;
 }
 
+export interface ShippingConfig {
+  insideDhakaFee: number;
+  outsideDhakaFee: number;
+  freeShippingThreshold: number;
+  estimatedDaysInside: string;
+  estimatedDaysOutside: string;
+}
+
 interface LanguageContextProps {
   language: Language;
   setLanguage: (lang: Language) => void;
@@ -35,6 +43,7 @@ interface LanguageContextProps {
   isLoadingProducts: boolean;
   categories: Category[];
   isLoadingCategories: boolean;
+  shippingConfig: ShippingConfig;
 }
 
 export interface Category {
@@ -127,12 +136,31 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
   
-  const [products, setProducts] = useState<Product[]>([]);
-  const [isLoadingProducts, setIsLoadingProducts] = useState(true);
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [isLoadingCategories, setIsLoadingCategories] = useState(true);
+  const [products, setProducts] = useState<Product[]>(STATIC_PRODUCTS);
+  const [isLoadingProducts, setIsLoadingProducts] = useState(false);
+  const [categories, setCategories] = useState<Category[]>([
+    { id: "cat_hot",         nameEn: "Hot Sale",                 nameBn: "হট সেল",                     image: "/images/categories/hot.png" },
+    { id: "cat_women",       nameEn: "Women's Fashion",          nameBn: "মহিলাদের ফ্যাশন",            image: "/images/categories/women.png" },
+    { id: "cat_shoes",       nameEn: "Shoes",                    nameBn: "জুতো",                       image: "/images/categories/shoes.png" },
+    { id: "cat_kids",        nameEn: "Kids & Toys",              nameBn: "বাচ্চাদের খেলনা ও পোশাক",   image: "/images/categories/kids.png" },
+    { id: "cat_watches",     nameEn: "Watches & Acc.",           nameBn: "ঘড়ি ও অ্যাক্সেসরিজ",       image: "/images/categories/watches.png" },
+    { id: "cat_home",        nameEn: "Home & Living",            nameBn: "হোম ও লিভিং",               image: "/images/categories/home.png" },
+    { id: "cat_bags",        nameEn: "Bags & Luggage",           nameBn: "ব্যাগ ও লাগেজের কালেকশন",    image: "/images/categories/bags.png" },
+    { id: "cat_electronics", nameEn: "Electronics & Gadgets",    nameBn: "ইলেকট্রনিক্স ও গ্যাজেটস",    image: "/images/categories/electronics.png" },
+    { id: "cat_men",         nameEn: "Men's Fashion",            nameBn: "পুরুষদের ফ্যাশন",            image: "/images/categories/men.png" },
+    { id: "cat_stationery",  nameEn: "Stationery & Office",      nameBn: "স্টেশনারি ও অফিস",          image: "/images/categories/stationery.png" },
+    { id: "cat_automotive",  nameEn: "Automotive & Accessories", nameBn: "অটোমোটিভ ও এক্সেসরিজ",        image: "/images/categories/automotive.png" }
+  ]);
+  const [isLoadingCategories, setIsLoadingCategories] = useState(false);
+  const [shippingConfig, setShippingConfig] = useState<ShippingConfig>({
+    insideDhakaFee: 60,
+    outsideDhakaFee: 120,
+    freeShippingThreshold: 0,
+    estimatedDaysInside: "1-2 Days",
+    estimatedDaysOutside: "3-5 Days"
+  });
 
-  // Fetch products and categories from backend API with polling
+  // Fetch products and categories from backend API with non-blocking fallback
   useEffect(() => {
     const rawApiUrl = 
       process.env.NEXT_PUBLIC_API_URL || 
@@ -147,38 +175,39 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
       fetch(`${apiBaseUrl}/api/products`, { cache: "no-store" })
         .then((res) => res.json())
         .then((data) => {
-          setProducts(data);
+          if (Array.isArray(data) && data.length > 0) {
+            setProducts(data);
+          }
           setIsLoadingProducts(false);
         })
         .catch((err) => {
-          console.error("Failed to load products from API", err);
-          setProducts(STATIC_PRODUCTS);
           setIsLoadingProducts(false);
         });
 
       fetch(`${apiBaseUrl}/api/categories`, { cache: "no-store" })
         .then((res) => res.json())
         .then((data) => {
-          setCategories(data);
+          if (Array.isArray(data) && data.length > 0) {
+            setCategories(data);
+          }
           setIsLoadingCategories(false);
         })
         .catch((err) => {
-          console.error("Failed to load categories from API", err);
-          setCategories([
-            { id: "cat_hot", nameEn: "Hot Sale", nameBn: "হট সেল", image: "/images/categories/hot.png" },
-            { id: "cat_women", nameEn: "Women's Fashion", nameBn: "মহিলাদের ফ্যাশন", image: "/images/categories/women.png" },
-            { id: "cat_men", nameEn: "Men's Fashion", nameBn: "পুরুষদের ফ্যাশন", image: "/images/categories/men.png" },
-            { id: "cat_shoes", nameEn: "Shoes", nameBn: "জুতো", image: "/images/categories/shoes.png" },
-            { id: "cat_watches", nameEn: "Watches & Acc.", nameBn: "ঘড়ি ও অ্যাক্সেসরিজ", image: "/images/categories/watches.png" },
-            { id: "cat_kids", nameEn: "Kids & Toys", nameBn: "বাচ্চাদের খেলনা ও পোশাক", image: "/images/categories/kids.png" },
-            { id: "cat_flash", nameEn: "Flash Sale", nameBn: "ফ্ল্যাশ সেল", image: "/images/categories/hot.png" }
-          ]);
           setIsLoadingCategories(false);
         });
+
+      fetch(`${apiBaseUrl}/api/settings/shipping`, { cache: "no-store" })
+        .then((res) => res.json())
+        .then((data) => {
+          if (data && data.insideDhakaFee !== undefined) {
+            setShippingConfig(data);
+          }
+        })
+        .catch(() => {});
     };
 
     loadData();
-    const interval = setInterval(loadData, 10000); // Poll every 10 seconds for real-time updates
+    const interval = setInterval(loadData, 10000);
     return () => clearInterval(interval);
   }, []);
 
@@ -286,6 +315,7 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
         isLoadingProducts,
         categories,
         isLoadingCategories,
+        shippingConfig,
       }}
     >
       {children}

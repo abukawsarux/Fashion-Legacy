@@ -13,7 +13,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "../../context/AuthContext";
 
 export default function CheckoutPage() {
-  const { language, currency, cartItems, clearCart } = useLanguage();
+  const { language, currency, cartItems, clearCart, shippingConfig } = useLanguage();
   const { user, isAuthenticated, addSimulatedOrder } = useAuth();
 
   // Form states
@@ -44,8 +44,8 @@ export default function CheckoutPage() {
     return numStr.replace(/\d/g, (d) => banglaDigits[parseInt(d)]);
   };
 
-  const formatShippingOption = (amountUSD: number) => {
-    const converted = parseFloat(convertPrice(amountUSD, currency));
+  const formatShippingOption = (amountBDT: number) => {
+    const converted = parseFloat(convertPrice(amountBDT, currency));
     const formattedVal = (currency === "BDT" || currency === "SAR") ? converted.toFixed(0) : converted.toFixed(2);
     const valStr = language === "en" ? formattedVal : toBanglaDigits(formattedVal);
     return `${currencySymbol}${valStr}`;
@@ -68,12 +68,20 @@ export default function CheckoutPage() {
   const subtotalUSD = cartItems.reduce((sum, item) => sum + item.priceUSD * item.quantity, 0);
   const currencySymbol = getCurrencySymbol(currency);
 
-  // Dynamic Shipping Costs (Inside Dhaka: ৳80 / $0.67 USD; Outside Dhaka: ৳150 / $1.25 USD)
-  const shippingCostUSD = shippingArea === "inside" ? 80 / 120 : 150 / 120;
+  // Dynamic Shipping Costs from Admin Dashboard Config
+  const insideFeeBDT = shippingConfig?.insideDhakaFee ?? 60;
+  const outsideFeeBDT = shippingConfig?.outsideDhakaFee ?? 120;
+  const rawFeeBDT = shippingArea === "inside" ? insideFeeBDT : outsideFeeBDT;
+
+  // Check if Free Shipping Threshold applies
+  const subtotalBDT = subtotalUSD;
+  const isFreeShipping = (shippingConfig?.freeShippingThreshold > 0) && (subtotalBDT >= shippingConfig.freeShippingThreshold);
+
+  const effectiveShippingBDT = isFreeShipping ? 0 : rawFeeBDT;
   
   const displaySubtotal = parseFloat(convertPrice(subtotalUSD, currency));
-  const displayShipping = parseFloat(convertPrice(shippingCostUSD, currency));
-  const displayTotal = (displaySubtotal + displayShipping).toFixed(2);
+  const displayShipping = parseFloat(convertPrice(effectiveShippingBDT, currency));
+  const displayTotal = (displaySubtotal + displayShipping).toFixed(currency === "BDT" || currency === "SAR" ? 0 : 2);
 
   // Validation
   const validateForm = () => {
@@ -374,11 +382,11 @@ export default function CheckoutPage() {
                         {language === "en" ? "Inside Dhaka" : "ঢাকা সিটি"}
                       </span>
                       <span className="block text-[10px] md:text-xs text-gray-400 font-bold">
-                        {language === "en" ? "Delivery: 2-3 Days" : "ডেলিভারি সময়: ২-৩ দিন"}
+                        {language === "en" ? `Delivery: ${shippingConfig?.estimatedDaysInside || "1-2 Days"}` : `ডেলিভারি সময়: ${shippingConfig?.estimatedDaysInside || "১-২ দিন"}`}
                       </span>
                     </div>
                     <span className="text-xs md:text-sm font-black text-[#D4A017] flex-shrink-0">
-                      {formatShippingOption(80 / 120)}
+                      {isFreeShipping ? (language === "en" ? "FREE" : "ফ্রি") : formatShippingOption(insideFeeBDT)}
                     </span>
                   </button>
 
@@ -404,11 +412,11 @@ export default function CheckoutPage() {
                         {language === "en" ? "Outside Dhaka" : "ঢাকার বাইরে"}
                       </span>
                       <span className="block text-[10px] md:text-xs text-gray-400 font-bold">
-                        {language === "en" ? "Delivery: 3-5 Days" : "ডেলিভারি সময়: ৩-৫ দিন"}
+                        {language === "en" ? `Delivery: ${shippingConfig?.estimatedDaysOutside || "3-5 Days"}` : `ডেলিভারি সময়: ${shippingConfig?.estimatedDaysOutside || "৩-৫ দিন"}`}
                       </span>
                     </div>
                     <span className="text-xs md:text-sm font-black text-[#D4A017] flex-shrink-0">
-                      {formatShippingOption(150 / 120)}
+                      {isFreeShipping ? (language === "en" ? "FREE" : "ফ্রি") : formatShippingOption(outsideFeeBDT)}
                     </span>
                   </button>
                 </div>

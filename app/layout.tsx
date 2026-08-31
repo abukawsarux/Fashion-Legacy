@@ -7,6 +7,7 @@ import { Josefin_Sans } from "next/font/google";
 import { Providers } from "./providers";
 import Header from "../components/layout/Header";
 import Footer from "../components/layout/Footer";
+import MobileBottomNav from "../components/layout/MobileBottomNav";
 
 const josefinSans = Josefin_Sans({
   subsets: ["latin"],
@@ -21,7 +22,7 @@ const ogImageUrl = `${siteUrl}/opengraph-image.jpeg`;
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
-  title: "Fashion Legacy | Premium Fashion Destination",
+  title: "Fashion Legacy | Fordeal Style E-Commerce Platform",
   description: "Explore the legacy of premium fashion with our curated collection of outfits, footwear, and accessories.",
   icons: {
     icon: "/favicon.ico",
@@ -29,7 +30,7 @@ export const metadata: Metadata = {
     apple: "/favicon.ico",
   },
   openGraph: {
-    title: "Fashion Legacy | Premium Fashion Destination",
+    title: "Fashion Legacy | Fordeal Style E-Commerce Platform",
     description: "Explore the legacy of premium fashion with our curated collection of outfits, footwear, and accessories.",
     url: siteUrl,
     siteName: "Fashion Legacy",
@@ -46,7 +47,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Fashion Legacy | Premium Fashion Destination",
+    title: "Fashion Legacy | Fordeal Style E-Commerce Platform",
     description: "Explore the legacy of premium fashion with our curated collection of outfits, footwear, and accessories.",
     images: [ogImageUrl],
   },
@@ -61,7 +62,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={josefinSans.variable}>
-      <body className="min-h-screen overflow-x-hidden bg-gray-50/10">
+      <body className="min-h-screen overflow-x-hidden bg-white">
         {/* NoScript Fallback */}
         <noscript>
           <style>
@@ -76,14 +77,13 @@ export default function RootLayout({
 
         <Providers>
           <Header />
-          <main className="min-h-screen pt-16 md:pt-20">
+          <main className="min-h-screen pb-16 md:pb-8">
             {children}
           </main>
           <Footer />
+          <MobileBottomNav />
         </Providers>
       </body>
     </html>
   );
 }
-
-
