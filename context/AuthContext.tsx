@@ -94,7 +94,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
     }
     setMounted(true);
-  }, []);
+  }, [apiBaseUrl]);
 
   // Save to localStorage when state changes
   useEffect(() => {

@@ -17,6 +17,7 @@ import {
   ArrowLeft 
 } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 import { motion } from "framer-motion";
 import { convertPrice, getCurrencySymbol } from "../../data/products";
 
@@ -192,10 +193,11 @@ export default function OrdersPage() {
                 {order.items && order.items.map((item) => (
                   <div key={item.id} className="flex gap-3 text-xs md:text-sm">
                     <div className="relative w-10 h-14 rounded-lg overflow-hidden bg-gray-50 border border-gray-100 flex-shrink-0">
-                      <img
+                      <Image
                         src={item.image}
                         alt={item.nameEn}
-                        className="object-cover w-full h-full"
+                        fill
+                        className="object-cover"
                       />
                     </div>
                     
