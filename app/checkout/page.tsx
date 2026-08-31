@@ -139,7 +139,7 @@ export default function CheckoutPage() {
     try {
       const orderId = await addSimulatedOrder(
         cartItems,
-        subtotalUSD + shippingCostUSD,
+        subtotalUSD + (effectiveShippingBDT / 120),
         pMethod,
         { name, email: user?.email || (phone + "@customer.com"), address, shippingArea }
       );
