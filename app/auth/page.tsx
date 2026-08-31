@@ -1,6 +1,8 @@
 // app/auth/page.tsx
 "use client";
 
+export const dynamic = 'force-dynamic';
+
 import React, { useState, useEffect, Suspense } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { useLanguage } from "../../context/LanguageContext";
