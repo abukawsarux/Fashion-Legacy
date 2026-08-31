@@ -189,11 +189,11 @@ export default function ProductDetailsModal({ product, isOpen, onClose }: Produc
                   <span className="text-2xl font-extrabold text-[#D4A017]">
                     {currencySymbol}{displayActivePrice}
                   </span>
-                  {discountVal > 0 && (
+                  {discountPercent > 0 ? (
                     <span className="text-sm text-gray-400 line-through">
                       {currencySymbol}{displayOriginalPrice}
                     </span>
-                  )}
+                  ) : null}
                 </div>
               </div>
 
