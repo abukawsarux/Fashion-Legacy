@@ -15,6 +15,10 @@ export interface Product {
   category: string | string[];
   priceUSD: number;
   discountPercent: number;
+  discountAmount?: number;
+  badge?: string;
+  createdAt?: string;
+  soldCount?: number;
   images: string[];
   sizes: string[];
   colors: ProductColor[];
@@ -22,6 +26,7 @@ export interface Product {
   reviewsCount: number;
   featuresEn: string[];
   featuresBn: string[];
+  video?: string;
 }
 
 export const CURRENCIES = [
@@ -769,6 +774,7 @@ export const PRODUCTS: Product[] = [
     "category": "cat_women",
     "priceUSD": 44.99,
     "discountPercent": 15,
+    "video": "/videos/Casual%20Oversized%20Knit%20Cardigan.mp4",
     "images": [
       "https://images.unsplash.com/photo-1434389677669-e08b4cac3105?w=500&q=80"
     ],

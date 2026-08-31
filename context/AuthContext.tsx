@@ -1,7 +1,7 @@
 // context/AuthContext.tsx
 "use client";
 
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
 import { CartItem } from "./LanguageContext";
 
 export interface User {
@@ -30,6 +30,7 @@ interface AuthContextProps {
   logout: () => void;
   updateProfile: (updatedData: Partial<User>) => void;
   orders: OrderHistoryItem[];
+  refreshOrders: () => Promise<void>;
   addSimulatedOrder: (
     items: CartItem[], 
     total: number, 
@@ -54,6 +55,39 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       : "http://localhost:5000");
   const apiBaseUrl = rawApiUrl.endsWith("/") ? rawApiUrl.slice(0, -1) : rawApiUrl;
 
+  const refreshOrders = useCallback(async () => {
+    const targetEmail = user?.email || (typeof window !== "undefined" && localStorage.getItem("fl_user") ? JSON.parse(localStorage.getItem("fl_user") || "{}").email : null);
+    if (!targetEmail) return;
+    try {
+      const res = await fetch(`${apiBaseUrl}/api/orders/user/${targetEmail}`, { cache: "no-store" });
+      if (res.ok) {
+        const ordData = await res.json();
+        const ordersArray = Array.isArray(ordData) ? ordData : [];
+        setOrders(ordersArray.map((o: any) => ({
+          id: o.id,
+          date: o.createdAt ? o.createdAt.split("T")[0] : (o.date || new Date().toISOString().split("T")[0]),
+          items: (o.items || []).map((it: any) => ({
+            id: it.productId,
+            nameEn: it.nameEn,
+            nameBn: it.nameBn || it.nameEn,
+            priceUSD: it.priceUSD,
+            image: "/images/logo.png",
+            quantity: it.quantity,
+            size: it.size || "M",
+            colorEn: it.colorEn || "Default",
+            colorBn: it.colorEn || "ডিফল্ট"
+          })),
+          itemsCount: (o.items || []).reduce((sum: number, it: any) => sum + it.quantity, 0),
+          total: o.totalUSD || o.total || 0,
+          paymentMethod: o.paymentMethod || "Cash on Delivery",
+          status: o.status === "Pending" ? "Processing" : (o.status || "Processing")
+        })));
+      }
+    } catch (e) {
+      console.error("Failed to refresh user orders", e);
+    }
+  }, [user?.email, apiBaseUrl]);
+
   // Sync state with localStorage on load
   useEffect(() => {
     const storedUser = localStorage.getItem("fl_user");
@@ -62,39 +96,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       try {
         const parsedUser = JSON.parse(storedUser);
         setUser(parsedUser);
-        
-        // Fetch order history from API on mount
-        fetch(`${apiBaseUrl}/api/orders/user/${parsedUser.email}`)
-          .then((res) => res.json())
-          .then((ordData) => {
-            const ordersArray = Array.isArray(ordData) ? ordData : [];
-            setOrders(ordersArray.map((o: any) => ({
-              id: o.id,
-              date: o.createdAt ? o.createdAt.split("T")[0] : (o.date || new Date().toISOString().split("T")[0]),
-              items: (o.items || []).map((it: any) => ({
-                id: it.productId,
-                nameEn: it.nameEn,
-                nameBn: it.nameBn || it.nameEn,
-                priceUSD: it.priceUSD,
-                image: "/images/logo.png",
-                quantity: it.quantity,
-                size: it.size || "M",
-                colorEn: it.colorEn || "Default",
-                colorBn: it.colorEn || "ডিফল্ট"
-              })),
-              itemsCount: (o.items || []).reduce((sum: number, it: any) => sum + it.quantity, 0),
-              total: o.totalUSD || o.total || 0,
-              paymentMethod: o.paymentMethod || "Cash on Delivery",
-              status: o.status === "Pending" ? "Processing" : (o.status || "Processing")
-            })));
-          })
-          .catch((e) => console.error("Failed to load user orders on mount", e));
       } catch (e) {
         console.error("Failed to parse user", e);
       }
     }
     setMounted(true);
-  }, [apiBaseUrl]);
+  }, []);
+
+  // Poll for live status updates if logged in
+  useEffect(() => {
+    if (user?.email) {
+      refreshOrders();
+      const interval = setInterval(refreshOrders, 10000);
+      return () => clearInterval(interval);
+    }
+  }, [user?.email, refreshOrders]);
 
   // Save to localStorage when state changes
   useEffect(() => {
@@ -281,6 +297,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         logout,
         updateProfile,
         orders,
+        refreshOrders,
         addSimulatedOrder
       }}
     >

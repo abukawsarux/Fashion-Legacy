@@ -5,6 +5,7 @@ import React, { useState, useEffect } from "react";
 import { X, Star, Plus, Minus, ShoppingCart, Truck, ShieldCheck, RefreshCw } from "lucide-react";
 import { Product, convertPrice, getCurrencySymbol, getProductImageUrl } from "../../data/products";
 import { useLanguage } from "../../context/LanguageContext";
+import { getProductBadge } from "./ProductCard";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -35,8 +36,11 @@ export default function ProductDetailsModal({ product, isOpen, onClose }: Produc
 
   if (!product) return null;
 
+  const badgeInfo = getProductBadge(product);
+  const discountPercent = Math.round(Number(product.discountPercent) || 0);
   const originalPrice = product.priceUSD;
-  const discountedPrice = originalPrice * (1 - product.discountPercent / 100);
+  const discountedPrice = discountPercent > 0 ? originalPrice * (1 - discountPercent / 100) : originalPrice;
+  const discountTaka = discountPercent > 0 ? Math.round(originalPrice * (discountPercent / 100)) : 0;
 
   const activeName = language === "en" ? product.nameEn : product.nameBn;
   const activeDesc = language === "en" ? product.descriptionEn : product.descriptionBn;
@@ -119,11 +123,18 @@ export default function ProductDetailsModal({ product, isOpen, onClose }: Produc
                     sizes="(max-width: 768px) 100vw, 50vw"
                     className="object-cover"
                   />
-                  {product.discountPercent > 0 && (
-                    <span className="absolute top-4 left-4 bg-[#D4A017] text-white text-xs font-black px-2.5 py-1 rounded-md shadow-sm">
-                      -{product.discountPercent}% OFF
+                  {discountPercent > 0 ? (
+                    <span className="absolute top-3 left-3 bg-[#D4A017] text-white text-[10px] font-black px-2 py-0.5 rounded-md shadow-sm z-10">
+                      -{toBanglaDigits(discountPercent.toString())}% {language === "en" ? "OFF" : "ছাড়"}
                     </span>
-                  )}
+                  ) : null}
+
+                  {/* Highlight Badge Tag (Top-Right) */}
+                  {badgeInfo ? (
+                    <span className={`absolute top-3 right-3 ${badgeInfo.bgClass} text-[9px] font-black tracking-wider uppercase px-2 py-0.5 rounded-full shadow-md z-10 pointer-events-none`}>
+                      {badgeInfo.text}
+                    </span>
+                  ) : null}
                 </div>
 
                 {/* Image Thumbnails Selector */}
@@ -178,7 +189,7 @@ export default function ProductDetailsModal({ product, isOpen, onClose }: Produc
                   <span className="text-2xl font-extrabold text-[#D4A017]">
                     {currencySymbol}{displayActivePrice}
                   </span>
-                  {product.discountPercent > 0 && (
+                  {discountVal > 0 && (
                     <span className="text-sm text-gray-400 line-through">
                       {currencySymbol}{displayOriginalPrice}
                     </span>

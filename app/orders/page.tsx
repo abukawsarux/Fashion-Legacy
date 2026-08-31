@@ -16,7 +16,8 @@ import {
   Clock, 
   Truck, 
   Package, 
-  ArrowLeft 
+  ArrowLeft,
+  RefreshCw 
 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
@@ -24,9 +25,16 @@ import { motion } from "framer-motion";
 import { convertPrice, getCurrencySymbol } from "../../data/products";
 
 export default function OrdersPage() {
-  const { orders, isAuthenticated } = useAuth();
+  const { orders, isAuthenticated, refreshOrders } = useAuth();
   const { language, currency } = useLanguage();
   const router = useRouter();
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
+  const handleManualRefresh = async () => {
+    setIsRefreshing(true);
+    await refreshOrders();
+    setTimeout(() => setIsRefreshing(false), 600);
+  };
 
   // Route protection
   useEffect(() => {
@@ -140,10 +148,21 @@ export default function OrdersPage() {
         <span>{t.backToHome}</span>
       </Link>
 
-      <h1 className="text-xl md:text-2xl font-black text-gray-900 uppercase tracking-tight flex items-center gap-2">
-        <span className="w-2.5 h-6 bg-[#D4A017] rounded" />
-        <span>{t.pageTitle}</span>
-      </h1>
+      <div className="flex items-center justify-between gap-4">
+        <h1 className="text-xl md:text-2xl font-black text-gray-900 uppercase tracking-tight flex items-center gap-2">
+          <span className="w-2.5 h-6 bg-[#D4A017] rounded" />
+          <span>{t.pageTitle}</span>
+        </h1>
+
+        <button
+          onClick={handleManualRefresh}
+          disabled={isRefreshing}
+          className="px-3.5 py-2 rounded-xl bg-gray-50 hover:bg-[#D4A017] text-gray-600 hover:text-white border border-gray-200 hover:border-transparent transition-all text-xs font-bold flex items-center gap-1.5 cursor-pointer shadow-sm disabled:opacity-50"
+        >
+          <RefreshCw size={14} className={isRefreshing ? "animate-spin" : ""} />
+          <span>{language === "en" ? "Refresh Status" : "স্ট্যাটাস রিফ্রেশ করুন"}</span>
+        </button>
+      </div>
 
       {orders.length === 0 ? (
         <div className="bg-white border border-gray-100 rounded-3xl p-12 text-center space-y-5 max-w-md mx-auto shadow-sm">

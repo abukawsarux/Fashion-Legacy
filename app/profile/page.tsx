@@ -8,7 +8,8 @@ import { useAuth } from "../../context/AuthContext";
 import { useLanguage } from "../../context/LanguageContext";
 import Container from "../../components/shared/Container";
 import { useRouter } from "next/navigation";
-import { User, Phone, Mail, MapPin, Save, LogOut, ShoppingBag, CheckCircle, Clock, Truck, ShieldCheck, UserCheck } from "lucide-react";
+import Link from "next/link";
+import { User, Phone, Mail, MapPin, Save, LogOut, ShoppingBag, CheckCircle, Clock, Truck, ShieldCheck, UserCheck, ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { convertPrice, getCurrencySymbol } from "../../data/products";
@@ -305,10 +306,16 @@ export default function ProfilePage() {
 
         {/* RIGHT COLUMN: ORDER HISTORY LIST */}
         <div className="col-span-1 lg:col-span-5 bg-white border border-gray-100 rounded-3xl p-6 md:p-8 shadow-sm space-y-6">
-          <h2 className="text-sm font-extrabold text-gray-800 uppercase tracking-wider flex items-center gap-2 border-b border-gray-100 pb-3">
-            <ShoppingBag size={16} className="text-[#D4A017]" />
-            <span>{t.ordersTitle}</span>
-          </h2>
+          <div className="flex items-center justify-between border-b border-gray-100 pb-3">
+            <h2 className="text-sm font-extrabold text-gray-800 uppercase tracking-wider flex items-center gap-2">
+              <ShoppingBag size={16} className="text-[#D4A017]" />
+              <span>{t.ordersTitle}</span>
+            </h2>
+            <Link href="/orders" className="text-xs text-[#D4A017] hover:text-[#5c0006] font-bold flex items-center gap-1 transition-colors">
+              <span>{language === "en" ? "Full Status" : "বিস্তারিত ট্র্যাকিং"}</span>
+              <ArrowRight size={12} />
+            </Link>
+          </div>
 
           {orders.length === 0 ? (
             <p className="text-xs text-gray-400 font-bold text-center py-6">{t.noOrders}</p>

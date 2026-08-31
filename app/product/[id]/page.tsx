@@ -6,7 +6,7 @@ import { notFound, useParams } from "next/navigation";
 import Container from "../../../components/shared/Container";
 import { convertPrice, getCurrencySymbol, getProductImageUrl } from "../../../data/products";
 import { useLanguage } from "../../../context/LanguageContext";
-import ProductCard from "../../../components/home/ProductCard";
+import ProductCard, { getProductBadge } from "../../../components/home/ProductCard";
 import Image from "next/image";
 import { Star, Plus, Minus, ShoppingCart, Truck, ShieldCheck, RefreshCw, HelpCircle, ChevronUp, ChevronDown } from "lucide-react";
 import { motion } from "framer-motion";
@@ -49,8 +49,11 @@ export default function ProductDetailPage() {
     notFound();
   }
 
+  const badgeInfo = getProductBadge(product);
+  const discountPercent = Math.round(Number(product.discountPercent) || 0);
   const originalPrice = product.priceUSD;
-  const discountedPrice = originalPrice * (1 - product.discountPercent / 100);
+  const discountedPrice = discountPercent > 0 ? originalPrice * (1 - discountPercent / 100) : originalPrice;
+  const discountTaka = discountPercent > 0 ? Math.round(originalPrice * (discountPercent / 100)) : 0;
 
   const activeName = language === "en" ? product.nameEn : product.nameBn;
   const activeDesc = language === "en" ? product.descriptionEn : product.descriptionBn;
@@ -126,11 +129,18 @@ export default function ProductDetailPage() {
             sizes="(max-width: 1024px) 100vw, 50vw"
             className="object-cover"
           />
-          {product.discountPercent > 0 && (
-            <span className="absolute top-4 left-4 bg-[#D4A017] text-white text-xs font-black px-3 py-1.5 rounded-lg shadow-md">
-              -{product.discountPercent}% OFF
+          {discountPercent > 0 ? (
+            <span className="absolute top-3 left-3 bg-[#D4A017] text-white text-[10px] font-black px-2 py-1 rounded-md shadow-sm z-10">
+              -{toBanglaDigits(discountPercent.toString())}% {language === "en" ? "OFF" : "ছাড়"}
             </span>
-          )}
+          ) : null}
+
+          {/* Highlight Badge Tag (Top-Right) */}
+          {badgeInfo ? (
+            <span className={`absolute top-3 right-3 ${badgeInfo.bgClass} text-[9px] font-black tracking-wider uppercase px-2 py-0.5 rounded-full shadow-md z-10 pointer-events-none`}>
+              {badgeInfo.text}
+            </span>
+          ) : null}
         </div>
 
         {/* MOBILE LAYOUT ONLY: Horizontal Thumbnails */}
@@ -192,11 +202,11 @@ export default function ProductDetailPage() {
             <span className="text-2xl font-black text-[#D4A017]">
               {displayActivePrice} {currencySymbol}
             </span>
-            {product.discountPercent > 0 && (
+            {discountPercent > 0 ? (
               <span className="text-sm text-gray-400 line-through">
                 {displayOriginalPrice} {currencySymbol}
               </span>
-            )}
+            ) : null}
           </div>
 
           {/* Style selector (thumbnails in style row, matches screenshot) */}

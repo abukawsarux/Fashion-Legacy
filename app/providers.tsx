@@ -4,6 +4,7 @@ import { NextUIProvider } from "@nextui-org/react";
 import { useEffect } from "react";
 import { LanguageProvider } from "../context/LanguageContext";
 import { AuthProvider } from "../context/AuthContext";
+import VisitorTracker from "../components/analytics/VisitorTracker";
 
 export function Providers({ children }: { children: React.ReactNode }) {
   useEffect(() => {
@@ -51,6 +52,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <LanguageProvider>
       <AuthProvider>
+        <VisitorTracker />
         <NextUIProvider>{children}</NextUIProvider>
       </AuthProvider>
     </LanguageProvider>
